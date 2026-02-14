@@ -13,6 +13,7 @@ using namespace std;
 #define vec vector
 #define fir first 
 #define sec second
+
 constexpr int NUM_ITERATIONS = 8e5, INF = 1e9;
 
 struct Infoset {

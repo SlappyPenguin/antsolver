@@ -8,6 +8,7 @@ nonnegative cumulative regret.
 using namespace std;
 #define arr array 
 #define doub double 
+
 constexpr int NUM_ACTIONS = 3, NUM_ITERATIONS = 1e7;
 
 arr<arr<doub, NUM_ACTIONS>, 2> cum_regret, cum_strat, strat;

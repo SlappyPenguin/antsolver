@@ -9,6 +9,7 @@
 #include <string.h>
 #include <time.h>
 
+const char* OUTPUT_FILE = "../data/ranks.dat";
 const char HandRanks[][16] = {"BAD!!","High Card","Pair","Two Pair","Three of a Kind","Straight","Flush","Full House","Four of a Kind","Straight Flush"};
 
 __int64 IDs[612978];
@@ -391,7 +392,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	printf("\nValidation seconds = %.4lf\nTotal HighPrecision Clocks = %I64d\nHighPrecision clocks per lookup = %lf\n", (double)timer/CLOCKS_PER_SEC, clocksused, (double) clocksused /  133784560.0) ;
 
 	// output the array now that I have it!!
-	FILE * fout = fopen("../../data/ranks.dat", "wb");
+	FILE * fout = fopen(OUTPUT_FILE, "wb");
 	if (!fout) {
 		printf("Problem creating the Output File!\n");
 		return 1;

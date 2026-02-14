@@ -40,6 +40,7 @@ constexpr int NUM_HOLE_CARDS = 2;
 constexpr int NUM_BUCKETS = 9;
 constexpr int MAX_BUCKET_SIZE = 121538;
 constexpr int NUM_SUITS = 4;
+constexpr int NUM_RANKS = 13;
 constexpr int SMALL_BLIND = 50;
 constexpr int BIG_BLIND = 100;
 constexpr int STACK = 20000;
