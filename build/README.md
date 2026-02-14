@@ -1,0 +1,1 @@
+This folder stores .exe files (not tracked by Git).

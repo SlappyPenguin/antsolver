@@ -43,11 +43,11 @@ struct Set {
     }
 };
 
-vec<Set> add_card(vec<Set> sets, int index, int street_end_at) {
+vec<Set> add_card(const vec<Set>& sets, int index, int street_end_at) {
     vec<Set> ans;
     ofstream file;
     if (street_end_at != -1) file.open(OUTPUT_FILES[street_end_at], ios::binary);
-    for (Set set : sets) {
+    for (const Set& set : sets) {
         for (int card = 0; card < NUM_CARDS; card++) {
             // No duplicate cards
             if (count(set.cards.begin(), set.cards.begin() + index, card) > 0) continue;
@@ -70,7 +70,8 @@ vec<Set> add_card(vec<Set> sets, int index, int street_end_at) {
             new_set.appearances[suit].push_back({rank, STREET_AT[index]});
 
             if (street_end_at != -1) new_set.print(file, street_end_at);
-            ans.push_back(new_set);
+            // Don't push when we get to end of river to save space
+            if (index != NUM_FINAL_CARDS - 1) ans.push_back(new_set);
         }
     }
     return ans;

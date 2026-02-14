@@ -143,7 +143,7 @@ inline lint get_id(arr<int, NUM_FINAL_CARDS> cards, int street) {
 }
 inline arr<int, NUM_FINAL_CARDS> get_cards(lint id, int street) {
     arr<int, NUM_FINAL_CARDS> cards;
-    for (int i = 0; i < CUM_STREET_SIZE[street]; i++) {
+    for (int i = CUM_STREET_SIZE[street] - 1; i >= 0; i--) {
         cards[i] = id % 100;
         id /= 100;
     }

@@ -2,7 +2,7 @@
 #include <fstream>
 
 int main() {
-    const char* filename = "flop_sets.bin";  // change as needed
+    const char* filename = "river_sets.bin";  // change as needed
 
     std::ifstream file(filename, std::ios::binary | std::ios::ate);
     if (!file) {
