@@ -37,5 +37,13 @@
 *.out
 *.app
 
-# debug information files
+# Debug information files
 *.dwo
+
+# Build folder
+build/
+
+# Large generated data files
+data/
+*.dat 
+*.bin
