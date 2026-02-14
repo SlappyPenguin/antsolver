@@ -1,6 +1,7 @@
 /*
-Implements vanilla CFR from https://poker.cs.ualberta.ca/publications/NIPS07-cfr.pdf in order to find the Nash 
-equilibrium for Kuhn Poker. Vanilla CFR uses no sampling and traverses the entire game tree in each iteration.
+Implements CFR+ from https://poker.cs.ualberta.ca/publications/2015-ijcai-cfrplus.pdf in order to find the Nash 
+equilibrium for Kuhn Poker. CFR+ is an optimised version of CFR that 1) doesn't let cumulative regrets fall 
+below 0, and 2) weights the strategy sum linearly, favouring later iterations.
 
 Solution verified from https://webdocs.cs.ualberta.ca/~holte/Publications/aaai2005poker.pdf.
 */
@@ -95,7 +96,10 @@ doub get_value(int iteration, int learner, str state, doub learner_prob, doub ot
     if (player == learner) {
         for (char action : {'p', 'b'}) {
             infoset[info].cum_regret[action] += other_prob * (action_ev[action] - ev);
-            infoset[info].cum_strat[action] += learner_prob * infoset[info].strat[action];
+            infoset[info].cum_regret[action] = max(infoset[info].cum_regret[action], 0.0);
+
+            doub weight = iteration + 1;
+            infoset[info].cum_strat[action] += learner_prob * infoset[info].strat[action] * weight;
         }
     }
     return ev;
@@ -111,12 +115,12 @@ void final_upd_strat() {
     }
 }
 void print_strat() {
-    cout << "Equilibrium strategy: ";
+    cout << "Equilibrium strategy: " << '\n';
     for (pair<const str, Infoset>& info : infoset) 
         cout << info.fir << ": p" << info.sec.strat['p'] << " " << "b" << info.sec.strat['b'] << '\n';
 }
 void print_ev0() {
-    cout << "Expected value for player 1: " << '\n';
+    cout << "Equilibrium strategy: ";
     doub ev = 0.0;
     for (str state : {"ak", "aq", "ka", "kq", "qa", "qk"}) 
         ev += get_value(-INF, 0, state, 1, 1, false) / 6; // Will not trigger any updates

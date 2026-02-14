@@ -1,6 +1,7 @@
 /*
-Implements vanilla CFR from https://poker.cs.ualberta.ca/publications/NIPS07-cfr.pdf in order to find the Nash 
-equilibrium for Kuhn Poker. Vanilla CFR uses no sampling and traverses the entire game tree in each iteration.
+Implements external sampling MCCFR from https://mlanctot.info/files/papers/PhD_Thesis_MarcLanctot.pdf in order to 
+find the Nash equilibrium for Kuhn Poker. External sampling MCCFR samples both chance and opponent actions, which
+significantly reduces the time for each traversal.
 
 Solution verified from https://webdocs.cs.ualberta.ca/~holte/Publications/aaai2005poker.pdf.
 */
@@ -12,7 +13,7 @@ using namespace std;
 #define vec vector
 #define fir first 
 #define sec second
-constexpr int NUM_ITERATIONS = 1e5, INF = 1e9;
+constexpr int NUM_ITERATIONS = 8e5, INF = 1e9;
 
 struct Infoset {
     map<char, doub> cum_regret, cum_strat;
@@ -43,13 +44,16 @@ int get_utility(int learner, str state) {
 bool is_chance(str state) { 
     return (state.size() <= 1);
 }
-vec<pair<str, doub>> get_chances(str state) {
+int get_random(int size) {
+    static random_device device;
+    static mt19937 generator(device()); 
+    uniform_int_distribution<int> distribution(0, size - 1);
+    return distribution(generator);
+}
+str get_chance_state(str state) {
     vec<char> option = {'a', 'k', 'q'};
     if (state.size() == 1) option.erase(find(option.begin(), option.end(), state[0]));
-    vec<pair<str, doub>> ans;
-    for (char x : option) 
-        ans.push_back({state + x, 1 / (doub) option.size()});
-    return ans;
+    return state + option[get_random(option.size())]; 
 }
 
 str get_infoset(int player, str state) {
@@ -69,36 +73,45 @@ void upd_strat(str info) {
         else infoset[info].strat[action] /= regret_sum;
     }
 }
-doub get_value(int iteration, int learner, str state, doub learner_prob, doub other_prob, bool do_update) {
+
+char get_action(str info) {
+    static random_device device; 
+    static mt19937 generator(device());
+    static uniform_real_distribution<doub> distribution(0, 1);
+    doub random = distribution(generator);
+    for (char action : {'p', 'b'}) {
+        random -= infoset[info].strat[action];
+        if (random <= 0) return action;
+    }
+    return 'b';
+}
+
+// Due to external sampling, EV here is never accurate
+doub get_value(int iteration, int learner, str state) {
     if (is_leaf(state)) 
         return get_utility(learner, state);
-    else if (is_chance(state)) {
-        doub ev = 0;
-        for (pair<str, doub> chance : get_chances(state)) 
-            ev += chance.sec * get_value(iteration, learner, chance.fir, learner_prob, other_prob * chance.sec, do_update);
-        return ev;
-    }
+    else if (is_chance(state)) 
+        return get_value(iteration, learner, get_chance_state(state));
 
     int player = state.size() % 2;
     str info = get_infoset(player, state);
-    if (do_update) upd_strat(info);
+    upd_strat(info);
     
-    doub ev = 0;
-    map<char, doub> action_ev;
-    for (char action : {'p', 'b'}) {
-        doub new_learner_prob = (player == learner) ? learner_prob * infoset[info].strat[action] : learner_prob;
-        doub new_other_prob = (player == learner) ? other_prob : other_prob * infoset[info].strat[action];
-        action_ev[action] = get_value(iteration, learner, state + action, new_learner_prob, new_other_prob, do_update);
-        ev += action_ev[action] * infoset[info].strat[action];
-    }
-
+    doub value = 0;
     if (player == learner) {
+        map<char, doub> action_ev;
         for (char action : {'p', 'b'}) {
-            infoset[info].cum_regret[action] += other_prob * (action_ev[action] - ev);
-            infoset[info].cum_strat[action] += learner_prob * infoset[info].strat[action];
+            action_ev[action] = get_value(iteration, learner, state + action);
+            value += action_ev[action] * infoset[info].strat[action];
         }
+        for (char action : {'p', 'b'}) 
+            infoset[info].cum_regret[action] += action_ev[action] - value;
+    } else {
+        value = get_value(iteration, learner, state + get_action(info));
+        for (char action : {'p', 'b'}) 
+            infoset[info].cum_strat[action] += infoset[info].strat[action];
     }
-    return ev;
+    return value;
 }
 
 void final_upd_strat() {
@@ -111,16 +124,39 @@ void final_upd_strat() {
     }
 }
 void print_strat() {
-    cout << "Equilibrium strategy: ";
+    cout << "Equilibrium strategy: " << '\n';
     for (pair<const str, Infoset>& info : infoset) 
         cout << info.fir << ": p" << info.sec.strat['p'] << " " << "b" << info.sec.strat['b'] << '\n';
 }
+vec<pair<str, doub>> get_chances(str state) {
+    vec<char> option = {'a', 'k', 'q'};
+    if (state.size() == 1) option.erase(find(option.begin(), option.end(), state[0]));
+    vec<pair<str, doub>> ans;
+    for (char x : option) 
+        ans.push_back({state + x, 1 / (doub) option.size()});
+    return ans;
+}
+doub get_ev(int learner, str state) {
+    if (is_leaf(state)) 
+        return get_utility(learner, state);
+    else if (is_chance(state)) {
+        doub ev = 0;
+        for (pair<str, doub> chance : get_chances(state)) 
+            ev += chance.sec * get_ev(learner, chance.fir);
+        return ev;
+    }
+
+    int player = state.size() % 2;
+    str info = get_infoset(player, state);
+
+    doub ev = 0;
+    for (char action : {'p', 'b'}) 
+        ev += infoset[info].strat[action] * get_ev(learner, state + action);
+    return ev;
+}
 void print_ev0() {
-    cout << "Expected value for player 1: " << '\n';
-    doub ev = 0.0;
-    for (str state : {"ak", "aq", "ka", "kq", "qa", "qk"}) 
-        ev += get_value(-INF, 0, state, 1, 1, false) / 6; // Will not trigger any updates
-    cout << ev << '\n';
+    cout << "Expected value for player 1: ";
+    cout << get_ev(0, "") << '\n';
 }
 
 int main() {
@@ -130,7 +166,7 @@ int main() {
     
     for (int i = 0; i < NUM_ITERATIONS; i++) 
         for (int j : {0, 1}) 
-            get_value(i, j, "", 1, 1, true);
+            get_value(i, j, "");
 
     auto end_time = chrono::high_resolution_clock::now();
     chrono::duration<doub> elapsed_time = end_time - start_time;

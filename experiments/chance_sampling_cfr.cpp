@@ -73,11 +73,11 @@ void upd_strat(str info) {
     }
 }
 // Due to chance sampling, EV is not accurate until after cards are dealt
-doub get_ev(int iteration, int learner, str state, doub learner_prob, doub other_prob, bool do_update) {
+doub get_value(int iteration, int learner, str state, doub learner_prob, doub other_prob, bool do_update) {
     if (is_leaf(state)) 
         return get_utility(learner, state);
     else if (is_chance(state)) 
-        return get_ev(iteration, learner, get_chance_state(state), learner_prob, other_prob, do_update);
+        return get_value(iteration, learner, get_chance_state(state), learner_prob, other_prob, do_update);
 
     int player = state.size() % 2;
     str info = get_infoset(player, state);
@@ -89,7 +89,7 @@ doub get_ev(int iteration, int learner, str state, doub learner_prob, doub other
     for (char action : {'p', 'b'}) {
         doub new_learner_prob = (player == learner) ? learner_prob * infoset[info].strat[action] : learner_prob;
         doub new_other_prob = (player == learner) ? other_prob : other_prob * infoset[info].strat[action];
-        action_ev[action] = get_ev(iteration, learner, state + action, new_learner_prob, new_other_prob, do_update);
+        action_ev[action] = get_value(iteration, learner, state + action, new_learner_prob, new_other_prob, do_update);
         ev += action_ev[action] * infoset[info].strat[action];
     }
 
@@ -117,10 +117,10 @@ void print_strat() {
         cout << info.fir << ": p" << info.sec.strat['p'] << " " << "b" << info.sec.strat['b'] << '\n';
 }
 void print_ev0() {
-    cout << "Expected value for player 1: " << '\n';
+    cout << "Equilibrium strategy: ";
     doub ev = 0.0;
     for (str state : {"ak", "aq", "ka", "kq", "qa", "qk"}) 
-        ev += get_ev(-INF, 0, state, 1, 1, false) / 6; // Will not trigger any updates
+        ev += get_value(-INF, 0, state, 1, 1, false) / 6; // Will not trigger any updates
     cout << ev << '\n';
 }
 
@@ -131,7 +131,7 @@ int main() {
     
     for (int i = 0; i < NUM_ITERATIONS; i++) 
         for (int j : {0, 1}) 
-            get_ev(i, j, "", 1, 1, true);
+            get_value(i, j, "", 1, 1, true);
 
     auto end_time = chrono::high_resolution_clock::now();
     chrono::duration<doub> elapsed_time = end_time - start_time;
