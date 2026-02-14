@@ -8,7 +8,7 @@ I try to be quite comprehensive with the timeline of major breakthroughs, but th
 
 ### (1992) Linear programming
 Early attempts at solving extensive games made use of linear programming.
-[Koller, D., & Megiddo, N. (1992). The complexity of two-person zero-sum games in extensive form. Games and economic behavior, 4(4), 528-552.]
+*Koller, D., & Megiddo, N. (1992). The complexity of two-person zero-sum games in extensive form. Games and economic behavior, 4(4), 528-552.*
 
 (2000) Regret matching 
 [Hart, S., & Mas‐Colell, A. (2000). A simple adaptive procedure leading to correlated equilibrium. Econometrica, 68(5), 1127-1150.]
