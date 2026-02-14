@@ -5,7 +5,8 @@ This folder is not a part of the main solver. It is a record tracing the progres
 I try to be quite comprehensive with the timeline of major breakthroughs, but the programs provided here in C++ only implement a few equilibrium finding algorithms, specifically the earlier variants of CFR (more coming soon...). 
 
 ## Timeline
-(1992) Linear programming
+
+### (1992) Linear programming
 Early attempts at solving extensive games made use of linear programming.
 [Koller, D., & Megiddo, N. (1992). The complexity of two-person zero-sum games in extensive form. Games and economic behavior, 4(4), 528-552.]
 
