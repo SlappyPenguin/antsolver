@@ -1,0 +1,1 @@
+This folder stores large data files (not tracked by Git).
