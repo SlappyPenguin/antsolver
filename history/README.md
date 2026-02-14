@@ -7,7 +7,7 @@ I try to be quite comprehensive with the timeline of major breakthroughs, but th
 ## Timeline
 
 ### (1992) Linear programming
-Early attempts at solving extensive games made use of linear programming.
+Early attempts at solving extensive games made use of linear programming.  
 *Koller, D., & Megiddo, N. (1992). The complexity of two-person zero-sum games in extensive form. Games and economic behavior, 4(4), 528-552.*
 
 (2000) Regret matching 
