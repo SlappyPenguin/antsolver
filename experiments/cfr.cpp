@@ -1,5 +1,5 @@
 /*
-Implements Vanilla CFR from https://poker.cs.ualberta.ca/publications/NIPS07-cfr.pdf in order to find the Nash 
+Implements vanilla CFR from https://poker.cs.ualberta.ca/publications/NIPS07-cfr.pdf in order to find the Nash 
 equilibrium for Kuhn Poker. Vanilla CFR uses no sampling and traverses the entire game tree in each iteration.
 
 Solution verified from https://webdocs.cs.ualberta.ca/~holte/Publications/aaai2005poker.pdf.
