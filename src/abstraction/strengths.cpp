@@ -35,7 +35,7 @@ float get_hand_strength(arr<int, NUM_FINAL_CARDS> cards) {
     return ans;
 }
 
-vec<float> strength(NUM_SETS[(int) Street::River]);
+vec<float> strength;
 int main() {
     init_ranks();
 
@@ -44,13 +44,16 @@ int main() {
 
     ifstream input_file(INPUT_FILE, ios::binary);
     ofstream output_file(OUTPUT_FILE, ios::binary);
-    for (int i = 0; i < NUM_SETS[(int) Street::River]; i++) {
+
+    lint num_sets = NUM_SETS[(int) Street::River];
+    strength.resize(num_sets);
+    for (lint i = 0; i < num_sets; i++) {
         lint id; read(input_file, id);
         arr<int, NUM_FINAL_CARDS> cards = get_cards(id, (int) Street::River);
         strength[i] = get_hand_strength(cards);
         write(output_file, id);
     }
-    for (int i = 0; i < NUM_SETS[(int) Street::River]; i++) 
+    for (lint i = 0; i < num_sets; i++) 
         write(output_file, strength[i]);
     
     auto end_time = chrono::high_resolution_clock::now();
