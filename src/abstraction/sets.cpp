@@ -77,8 +77,11 @@ vec<Set> add_card(vec<Set> sets, int index, int street_end_at) {
 }
 
 int main() {    
+    cout << "Generating for... ";
+    auto start_time = chrono::high_resolution_clock::now();
+
     vec<Set> sets = {{}};
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < NUM_FINAL_CARDS; i++) {
         int street_end_at = -1;
         for (int j = 0; j < NUM_STREETS; j++) {
             if (i != CUM_STREET_SIZE[j] - 1) continue;
@@ -87,4 +90,9 @@ int main() {
         }
         sets = add_card(sets, i, street_end_at);
     }
+
+    auto end_time = chrono::high_resolution_clock::now();
+    chrono::duration<doub> elapsed_time = end_time - start_time;
+    cout << fixed << setprecision(3);
+    cout << elapsed_time.count() << " seconds" << '\n';
 }

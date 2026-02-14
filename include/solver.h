@@ -141,6 +141,14 @@ inline lint get_id(arr<int, NUM_FINAL_CARDS> cards, int street) {
     }
     return id;
 }
+inline arr<int, NUM_FINAL_CARDS> get_cards(lint id, int street) {
+    arr<int, NUM_FINAL_CARDS> cards;
+    for (int i = 0; i < CUM_STREET_SIZE[street]; i++) {
+        cards[i] = id % 100;
+        id /= 100;
+    }
+    return cards;
+}
 inline void erase_value(vec<int>& list, int value) {
     list.erase(find(list.begin(), list.end(), value));
 }
