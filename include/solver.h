@@ -256,11 +256,11 @@ struct Blueprint {
     } 
 };
 
+template<typename T>
 struct Map {
     vec<lint> keys;
-    // Shorts are used to save memory
-    vec<short> values;
-    short at(lint key) const {
+    vec<T> values;
+    T at(lint key) const {
         auto it = lower_bound(keys.begin(), keys.end(), key);
         assert(it != keys.end() && *it == key);
         return values[it - keys.begin()];
