@@ -1,5 +1,5 @@
 /*
-Generates all card sets in Poker which are strategically distinct, across every round of play. A card set is all 
+Generates all card sets in poker which are strategically distinct, across every round of play. A card set is all 
 the card information available to a player at any time. This includes their hole cards and all public cards so far. 
 The id of a card = 4 * rank + suit - 8 where rank is in [2, 14] and suit is in [0, 3].
 

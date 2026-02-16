@@ -1,4 +1,9 @@
 
+/*
+Quickly and cleverly fetches the rank of any 7-card poker hand. In total, there are 7462 equivalent hands classes,
+where the higher rank the better.
+*/
+
 #include <bits/stdc++.h>
 #include "../../include/solver.h"
 #include "../../include/rank.h"
@@ -24,8 +29,6 @@ static int get_hand_info(int* cards) {
     return HR[p + *cards++];
 }
 
-// Higher is better
-// In total, there are 7462 equivalent hand ranks
 int get_rank(arr<int, NUM_FINAL_CARDS> cards) {
     int cards_arr[NUM_FINAL_CARDS];
     for (int i = 0; i < NUM_FINAL_CARDS; i++) 

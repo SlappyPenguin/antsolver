@@ -1,3 +1,9 @@
+/*
+Generates the hand strength distribution of every flop and turn card set in poker. The distribution assumes that
+future streets are dealt uniformly randomly, and is represented as a histogram with a fixed number of intervals,
+where each interval stores the probability that the hand strength is within a certain range.
+*/
+
 #include <bits/stdc++.h>
 #include "../../include/solver.h"
 #include "../../include/convert.h"
