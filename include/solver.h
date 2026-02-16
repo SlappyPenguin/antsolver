@@ -44,6 +44,10 @@ constexpr int NUM_RANKS = 13;
 constexpr int SMALL_BLIND = 50;
 constexpr int BIG_BLIND = 100;
 constexpr int STACK = 20000;
+constexpr int NUM_INTERVALS = 10;
+constexpr float INTERVAL_SIZE = []{
+    return 1 / (float) NUM_INTERVALS;
+}();
 constexpr lint GIGABYTE = 1ll << 30;
 constexpr arr<int, NUM_STREETS> NUM_CLUSTERS = {169, 1000, 1000, 1000};
 constexpr arr<int, NUM_BUCKETS> BUCKET_SIZE = {30, 1396, 17896, 121538, 30, 1396, 17896, 121538, 527589};
@@ -127,6 +131,9 @@ inline int get_non_leaf_bucket(int player, int street) {
 inline int get_info_id(int player, int street, int bet_id) {
     return bet_id - CUM_BUCKET_SIZE[get_non_leaf_bucket(player, street)];
 }
+inline int get_interval_id(int strength) {
+    return min((int) (strength / INTERVAL_SIZE), NUM_INTERVALS - 1);
+}
 inline arr<int, 2> get_thread_range(int total, int num_threads, int thread_id) {
     int num_per_thread = total / num_threads;
     int first_game = thread_id * num_per_thread;
@@ -176,6 +183,17 @@ inline void read_range(ifstream& file, vec<T>& list) {
         file.read(ptr + read, to_read);
         if (!file) break;
         read += to_read;
+    }
+}
+template<typename T>
+inline void write_range(ofstream& file, vec<T>& list) {
+    char* ptr = reinterpret_cast<char*>(list.data());
+    lint size = list.size() * sizeof(T), written = 0;
+    while (written < size) {
+        lint to_write = min(GIGABYTE, size - written);
+        file.write(ptr + written, to_write);
+        if (!file) break;
+        written += to_write;
     }
 }
 

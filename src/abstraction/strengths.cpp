@@ -35,7 +35,6 @@ float get_hand_strength(arr<int, NUM_FINAL_CARDS> cards) {
     return ans;
 }
 
-vec<float> strength;
 int main() {
     init_ranks();
 
@@ -46,15 +45,14 @@ int main() {
     ofstream output_file(OUTPUT_FILE, ios::binary);
 
     lint num_sets = NUM_SETS[(int) Street::River];
-    strength.resize(num_sets);
+    vec<float> strength(num_sets);
     for (lint i = 0; i < num_sets; i++) {
         lint id; read(input_file, id);
         arr<int, NUM_FINAL_CARDS> cards = get_cards(id, (int) Street::River);
         strength[i] = get_hand_strength(cards);
         write(output_file, id);
     }
-    for (lint i = 0; i < num_sets; i++) 
-        write(output_file, strength[i]);
+    write_range(output_file, strength);
     
     auto end_time = chrono::high_resolution_clock::now();
     chrono::duration<doub> elapsed_time = end_time - start_time;
