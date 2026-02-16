@@ -131,7 +131,7 @@ inline int get_non_leaf_bucket(int player, int street) {
 inline int get_info_id(int player, int street, int bet_id) {
     return bet_id - CUM_BUCKET_SIZE[get_non_leaf_bucket(player, street)];
 }
-inline int get_interval_id(int strength) {
+inline int get_interval_id(float strength) {
     return min((int) (strength / INTERVAL_SIZE), NUM_INTERVALS - 1);
 }
 inline arr<int, 2> get_thread_range(int total, int num_threads, int thread_id) {

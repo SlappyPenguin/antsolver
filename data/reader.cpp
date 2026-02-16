@@ -1,25 +1,50 @@
 #include <iostream>
 #include <fstream>
+#include <vector>
+
+using namespace std;
+
+// ======== Constants ========
+constexpr const char* FILE_NAME = "turn_distributions.bin";
+constexpr size_t X = 55190538;  // number of long longs to skip
+constexpr size_t Y = 500;   // number of floats to read
+constexpr size_t Z = 10;   // floats per line
+// ============================
 
 int main() {
-    const char* filename = "river_sets.bin";  // change as needed
-
-    std::ifstream file(filename, std::ios::binary | std::ios::ate);
+    ifstream file(FILE_NAME, ios::binary);
     if (!file) {
-        std::cerr << "Failed to open file\n";
+        cerr << "Failed to open file\n";
         return 1;
     }
 
-    std::streamsize size = file.tellg();
-    file.close();
-
-    if (size % sizeof(long long) != 0) {
-        std::cerr << "Warning: File size is not a multiple of sizeof(long long)\n";
+    // ---- Skip X long longs ----
+    file.seekg(X * sizeof(long long), ios::cur);
+    if (!file) {
+        cerr << "Failed while skipping long longs\n";
+        return 1;
     }
 
-    std::cout << "Number of long long values: "
-              << size / sizeof(long long)
-              << "\n";
+    // ---- Read Y floats ----
+    vector<float> values(Y);
+    file.read(reinterpret_cast<char*>(values.data()), Y * sizeof(float));
+    if (!file) {
+        cerr << "Failed reading floats\n";
+        return 1;
+    }
+
+    // ---- Print floats Z per line ----
+    for (size_t i = 0; i < values.size(); ++i) {
+        cout << values[i];
+        if ((i + 1) % Z == 0)
+            cout << '\n';
+        else
+            cout << ' ';
+    }
+
+    // Add newline if last line wasn't full
+    if (values.size() % Z != 0)
+        cout << '\n';
 
     return 0;
 }

@@ -22,9 +22,9 @@ void init_strength() {
 }
 
 arr<float, NUM_INTERVALS> get_distribution(arr<int, NUM_FINAL_CARDS> cards, int street) {
-    int size_to_street = CUM_STREET_SIZE[street];
+    int next_index = CUM_STREET_SIZE[street];
     arr<bool, NUM_CARDS> used = {};
-    for (int i = 0; i < size_to_street; i++)
+    for (int i = 0; i < next_index; i++)
         used[cards[i]] = true;
 
     arr<float, NUM_INTERVALS> distribution = {};
@@ -37,8 +37,8 @@ arr<float, NUM_INTERVALS> get_distribution(arr<int, NUM_FINAL_CARDS> cards, int 
                 if (j == i) continue;
                 count++;
 
-                cards[size_to_street] = i, cards[size_to_street + 1] = j;
-                lint converted_id = get_id(convert(cards, street), street);
+                cards[next_index] = i, cards[next_index + 1] = j;
+                lint converted_id = get_id(convert(cards, (int) Street::River), (int) Street::River);
                 float hand_strength = strength.at(converted_id);
                 distribution[get_interval_id(hand_strength)]++;
             }
@@ -48,15 +48,15 @@ arr<float, NUM_INTERVALS> get_distribution(arr<int, NUM_FINAL_CARDS> cards, int 
             if (used[i]) continue;
             count++;
 
-            cards[size_to_street] = i;
-            lint converted_id = get_id(convert(cards, street), street);
+            cards[next_index] = i;
+            lint converted_id = get_id(convert(cards, (int) Street::River), (int) Street::River);
             float hand_strength = strength.at(converted_id);
             distribution[get_interval_id(hand_strength)]++;
         }
     } else assert(false);
 
-    for (int j = 0; j < NUM_INTERVALS; j++)
-        distribution[j] /= count;
+    for (float& prob : distribution)
+        prob /= count;
     return distribution;
 }
 
@@ -69,12 +69,10 @@ int main() {
     for (int street : {(int) Street::Flop, (int) Street::Turn}) {
         ifstream input_file(SETS_FILE[street], ios::binary);
         ofstream output_file(DISTRIBUTIONS_FILE[street], ios::binary);
-
         int num_sets = NUM_SETS[street];
         vec<lint> ids(num_sets);
-        read_range(input_file, ids);
-        write_range(output_file, ids);
-        for (int i = 0; i < 50; i++) {
+        read_range(input_file, ids), write_range(output_file, ids);
+        for (int i = 0; i < num_sets; i++) {
             lint id = ids[i];
             arr<int, NUM_FINAL_CARDS> cards = get_cards(id, street);
             arr<float, NUM_INTERVALS> distribution = get_distribution(cards, street);
