@@ -8,8 +8,8 @@ uniformly random distribution of opponent hands, where a win is +1, a draw 0.5, 
 #include "../../include/rank.h"
 using namespace std;
 
-const str INPUT_FILE = "../data/river_sets.bin";
-const str OUTPUT_FILE = "../data/hand_strengths.bin";
+const str SETS_FILE = "../data/river_sets.bin";
+const str STRENGTHS_FILE = "../data/hand_strengths.bin";
 
 float get_hand_strength(arr<int, NUM_FINAL_CARDS> cards) {
     int my_rank = get_rank(cards);
@@ -41,8 +41,8 @@ int main() {
     cout << "Generating for... ";
     auto start_time = chrono::high_resolution_clock::now();
 
-    ifstream input_file(INPUT_FILE, ios::binary);
-    ofstream output_file(OUTPUT_FILE, ios::binary);
+    ifstream input_file(SETS_FILE, ios::binary);
+    ofstream output_file(STRENGTHS_FILE, ios::binary);
 
     lint num_sets = NUM_SETS[(int) Street::River];
     vec<float> strength(num_sets);

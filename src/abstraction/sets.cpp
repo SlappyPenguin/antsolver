@@ -27,7 +27,7 @@ Solution verified from https://noambrown.github.io/papers/19-Science-Superhuman_
 #include "../../include/solver.h"
 using namespace std;
 
-const arr<str, NUM_STREETS> OUTPUT_FILES = {
+const arr<str, NUM_STREETS> SETS_FILES = {
     "../data/preflop_sets.bin", 
     "../data/flop_sets.bin", 
     "../data/turn_sets.bin", 
@@ -46,7 +46,7 @@ struct Set {
 vec<Set> add_card(const vec<Set>& sets, int index, int street_end_at) {
     vec<Set> ans;
     ofstream file;
-    if (street_end_at != -1) file.open(OUTPUT_FILES[street_end_at], ios::binary);
+    if (street_end_at != -1) file.open(SETS_FILES[street_end_at], ios::binary);
     for (const Set& set : sets) {
         for (int card = 0; card < NUM_CARDS; card++) {
             // No duplicate cards
