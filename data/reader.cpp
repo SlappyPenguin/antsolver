@@ -3,10 +3,9 @@
 #include <array>
 
 int main() {
-    const std::string filename = "river_clusters.bin";
-
-    constexpr size_t X = 2428287420;   // number of long longs to skip
-    constexpr int MAXV = 1000;      // short range [0, 999]
+    const std::string filename = "turn_clusters.bin";
+    constexpr size_t X = 55190538;    // number of long longs to skip / shorts to read
+    constexpr int MAXV = 1000;       // shorts are in [0, 999]
 
     std::ifstream file(filename, std::ios::binary);
     if (!file) {
@@ -15,17 +14,14 @@ int main() {
     }
 
     // Skip X long longs
-    std::streamoff offset =
-        static_cast<std::streamoff>(X) * sizeof(long long);
-
+    std::streamoff offset = static_cast<std::streamoff>(X) * sizeof(long long);
     file.seekg(offset, std::ios::beg);
-
     if (!file) {
         std::cerr << "Seek failed\n";
         return 1;
     }
 
-    std::array<unsigned long long, MAXV> freq{};
+    std::array<unsigned long long, MAXV> freq{};  // frequency array, zero-initialized
     short value;
 
     // Read X shorts and count
@@ -37,7 +33,7 @@ int main() {
         }
 
         if (value < 0 || value >= MAXV) {
-            std::cerr << "Short out of range at index " << i << "\n";
+            std::cerr << "Short value out of range at index " << i << "\n";
             return 1;
         }
 

@@ -9,6 +9,9 @@ where each interval stores the probability that the hand strength is within a ce
 #include "../../include/convert.h"
 using namespace std;
 
+constexpr float INTERVAL_SIZE = []{
+    return 1 / (float) NUM_INTERVALS;
+}();
 const str STRENGTHS_FILE = "../data/hand_strengths.bin";
 const arr<str, NUM_STREETS> SETS_FILE = {
     "", "../data/flop_sets.bin",
@@ -27,6 +30,9 @@ void init_strength() {
     read_range(file, strength.keys), read_range(file, strength.values);
 }
 
+inline int get_interval(float strength) {
+    return min((int) (strength / INTERVAL_SIZE), NUM_INTERVALS - 1);
+}
 arr<float, NUM_INTERVALS> get_distribution(arr<int, NUM_FINAL_CARDS> cards, int street) {
     int next_index = CUM_STREET_SIZE[street];
     arr<bool, NUM_CARDS> used = {};

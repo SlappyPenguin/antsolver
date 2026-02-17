@@ -1,22 +1,28 @@
 /*
 No card abstraction is done on the preflop, i.e. there are 169 unique clusters corresponding to each card set.
 
-On the river, sets are clustered by percentile hand strength. 
+On the river, sets are clustered by percentile hand strength into 1000 clusters.
 */
 
 #include <bits/stdc++.h>
 #include "../../include/solver.h"
 using namespace std;
 
-const str PREFLOP_SETS_FILE = "../data/preflop_sets.bin";
-const str RIVER_STRENGTHS_FILE = "../data/hand_strengths.bin";
-const str PREFLOP_CLUSTERS_FILE = "../data/preflop_clusters.bin";
-const str RIVER_CLUSTERS_FILE = "../data/river_clusters.bin";
+constexpr int NUM_SECTIONS = 1000;
+constexpr float SECTION_SIZE = []{
+    return 1 / (float) NUM_SECTIONS;
+}();
+const str SETS_FILE = "../data/preflop_sets.bin";
+const str STRENGTHS_FILE = "../data/hand_strengths.bin";
+const arr<str, NUM_STREETS> CLUSTERS_FILE = {
+    "../data/preflop_clusters.bin", "",
+    "", "../data/river_clusters.bin"
+};
 
 void cluster_preflop() {
-    ifstream sets_file(PREFLOP_SETS_FILE, ios::binary);
-    ofstream clusters_file(PREFLOP_CLUSTERS_FILE, ios::binary);
-    int num_sets = NUM_SETS[(int) Street::Preflop];
+    int street = (int) Street::Preflop, num_sets = NUM_SETS[street];
+    ifstream sets_file(SETS_FILE, ios::binary);
+    ofstream clusters_file(CLUSTERS_FILE[street], ios::binary);
     vec<lint> ids(num_sets);
     read_range(sets_file, ids), write_range(clusters_file, ids);
     for (int i = 0; i < num_sets; i++) {
@@ -25,11 +31,20 @@ void cluster_preflop() {
     }
 }
 
+inline int get_section(float strength) {
+    return min((int) (strength / SECTION_SIZE), NUM_SECTIONS - 1);
+}
+inline lint get_cluster_size(int cluster) {
+    int street = (int) Street::River;
+    lint non_last_size = NUM_SETS[street] / NUM_SECTIONS;
+    lint last_size = NUM_SETS[street] - (NUM_SECTIONS - 1) * non_last_size;
+    return (cluster == NUM_CLUSTERS[street] - 1) ? last_size : non_last_size;
+}
 void cluster_river() {
-    ifstream strengths_file(RIVER_STRENGTHS_FILE, ios::binary);
-    ofstream clusters_file(RIVER_CLUSTERS_FILE, ios::binary);
     int street = (int) Street::River;
     lint num_sets = NUM_SETS[street];
+    ifstream strengths_file(STRENGTHS_FILE, ios::binary);
+    ofstream clusters_file(CLUSTERS_FILE[street], ios::binary);
     vec<lint> ids(num_sets);
     vec<float> strengths(num_sets);
     read_range(strengths_file, ids), read_range(strengths_file, strengths);
