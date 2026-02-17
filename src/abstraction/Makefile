@@ -1,4 +1,4 @@
-all: sets strengths distributions
+all: sets strengths distributions preflop_river_clusters
 
 sets:
 	g++ sets.cpp \
@@ -17,3 +17,9 @@ distributions:
 	-std=c++20 \
 	-Wall -O3 -march=native -flto -funroll-loops -pthread \
 	-o ../../build/distributions
+
+preflop_river_clusters:
+	g++ preflop_river_clusters.cpp \
+	-std=c++20 \
+	-Wall -O3 -march=native -flto -funroll-loops -pthread \
+	-o ../../build/preflop_river_clusters

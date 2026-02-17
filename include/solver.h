@@ -45,8 +45,12 @@ constexpr int SMALL_BLIND = 50;
 constexpr int BIG_BLIND = 100;
 constexpr int STACK = 20000;
 constexpr int NUM_INTERVALS = 10;
+constexpr int NUM_SECTIONS = 1000;
 constexpr float INTERVAL_SIZE = []{
     return 1 / (float) NUM_INTERVALS;
+}();
+constexpr float SECTION_SIZE = []{
+    return 1 / (float) NUM_SECTIONS;
 }();
 constexpr lint GIGABYTE = 1ll << 30;
 constexpr arr<int, NUM_STREETS> NUM_CLUSTERS = {169, 1000, 1000, 1000};
@@ -131,8 +135,17 @@ inline int get_non_leaf_bucket(int player, int street) {
 inline int get_info_id(int player, int street, int bet_id) {
     return bet_id - CUM_BUCKET_SIZE[get_non_leaf_bucket(player, street)];
 }
-inline int get_interval_id(float strength) {
+inline int get_interval(float strength) {
     return min((int) (strength / INTERVAL_SIZE), NUM_INTERVALS - 1);
+}
+inline int get_section(float strength) {
+    return min((int) (strength / SECTION_SIZE), NUM_SECTIONS - 1);
+}
+inline lint get_cluster_size(int cluster) {
+    int street = (int) Street::River;
+    lint non_last_size = NUM_SETS[street] / NUM_SECTIONS;
+    lint last_size = NUM_SETS[street] - (NUM_SECTIONS - 1) * non_last_size;
+    return (cluster == NUM_CLUSTERS[street] - 1) ? last_size : non_last_size;
 }
 inline arr<int, 2> get_thread_range(int total, int num_threads, int thread_id) {
     int num_per_thread = total / num_threads;

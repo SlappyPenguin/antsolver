@@ -1,50 +1,53 @@
 #include <iostream>
 #include <fstream>
-#include <vector>
-
-using namespace std;
-
-// ======== Constants ========
-constexpr const char* FILE_NAME = "turn_distributions.bin";
-constexpr size_t X = 55190538;  // number of long longs to skip
-constexpr size_t Y = 500;   // number of floats to read
-constexpr size_t Z = 10;   // floats per line
-// ============================
+#include <array>
 
 int main() {
-    ifstream file(FILE_NAME, ios::binary);
+    const std::string filename = "river_clusters.bin";
+
+    constexpr size_t X = 2428287420;   // number of long longs to skip
+    constexpr int MAXV = 1000;      // short range [0, 999]
+
+    std::ifstream file(filename, std::ios::binary);
     if (!file) {
-        cerr << "Failed to open file\n";
+        std::cerr << "Failed to open file\n";
         return 1;
     }
 
-    // ---- Skip X long longs ----
-    file.seekg(X * sizeof(long long), ios::cur);
+    // Skip X long longs
+    std::streamoff offset =
+        static_cast<std::streamoff>(X) * sizeof(long long);
+
+    file.seekg(offset, std::ios::beg);
+
     if (!file) {
-        cerr << "Failed while skipping long longs\n";
+        std::cerr << "Seek failed\n";
         return 1;
     }
 
-    // ---- Read Y floats ----
-    vector<float> values(Y);
-    file.read(reinterpret_cast<char*>(values.data()), Y * sizeof(float));
-    if (!file) {
-        cerr << "Failed reading floats\n";
-        return 1;
+    std::array<unsigned long long, MAXV> freq{};
+    short value;
+
+    // Read X shorts and count
+    for (size_t i = 0; i < X; ++i) {
+        file.read(reinterpret_cast<char*>(&value), sizeof(short));
+        if (!file) {
+            std::cerr << "Error reading short at index " << i << "\n";
+            return 1;
+        }
+
+        if (value < 0 || value >= MAXV) {
+            std::cerr << "Short out of range at index " << i << "\n";
+            return 1;
+        }
+
+        ++freq[value];
     }
 
-    // ---- Print floats Z per line ----
-    for (size_t i = 0; i < values.size(); ++i) {
-        cout << values[i];
-        if ((i + 1) % Z == 0)
-            cout << '\n';
-        else
-            cout << ' ';
+    // Print frequencies
+    for (int i = 0; i < MAXV; ++i) {
+        std::cout << i << " : " << freq[i] << "\n";
     }
-
-    // Add newline if last line wasn't full
-    if (values.size() % Z != 0)
-        cout << '\n';
 
     return 0;
 }

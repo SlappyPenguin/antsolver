@@ -46,7 +46,7 @@ arr<float, NUM_INTERVALS> get_distribution(arr<int, NUM_FINAL_CARDS> cards, int 
                 cards[next_index] = i, cards[next_index + 1] = j;
                 lint converted_id = get_id(convert(cards, (int) Street::River), (int) Street::River);
                 float hand_strength = strength.at(converted_id);
-                distribution[get_interval_id(hand_strength)]++;
+                distribution[get_interval(hand_strength)]++;
             }
         }
     } else if (street == (int) Street::Turn) {
@@ -57,7 +57,7 @@ arr<float, NUM_INTERVALS> get_distribution(arr<int, NUM_FINAL_CARDS> cards, int 
             cards[next_index] = i;
             lint converted_id = get_id(convert(cards, (int) Street::River), (int) Street::River);
             float hand_strength = strength.at(converted_id);
-            distribution[get_interval_id(hand_strength)]++;
+            distribution[get_interval(hand_strength)]++;
         }
     } else assert(false);
 
