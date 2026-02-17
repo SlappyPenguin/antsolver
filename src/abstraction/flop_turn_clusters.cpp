@@ -16,11 +16,11 @@ constexpr int MAX_NUM_CLUSTERS = []{
     return max(NUM_CLUSTERS[(int) Street::Flop], NUM_CLUSTERS[(int) Street::Turn]);
 }();
 constexpr float INF = 1e9;
-constexpr arr<int, NUM_STREETS> NUM_ROUNDS = {0, 1, 1, 0};
-constexpr arr<int, NUM_STREETS> NUM_ITERATIONS = {0, 1, 1, 0};
+constexpr arr<int, NUM_STREETS> NUM_ROUNDS = {0, 10, 2, 0};
+constexpr arr<int, NUM_STREETS> NUM_ITERATIONS = {0, 75, 5, 0};
 const arr<str, NUM_STREETS> DISTRIBUTIONS_FILE = {
-    "", "../data/flop_sets.bin",
-    "../data/turn_sets.bin", ""
+    "", "../data/flop_distributions.bin",
+    "../data/turn_distributions.bin", ""
 };
 const arr<str, NUM_STREETS> CLUSTERS_FILE = {
     "", "../data/flop_clusters.bin",
@@ -166,11 +166,11 @@ float get_score() {
     return score;
 }
 
-void print_clusters(int street) {
+void print_clusters(const vec<int>& best_clusters, int street) {
     ofstream file(CLUSTERS_FILE[street], ios::binary);
     write_range(file, ids);
     for (int i = 0; i < num_points; i++) {
-        short cluster = clusters[i];
+        short cluster = best_clusters[i];
         write(file, cluster);
     } 
 }
@@ -181,19 +181,20 @@ int main() {
 
     for (int street : {(int) Street::Flop, (int) Street::Turn}) {
         init_street(street);
+        float best_score = INF;
+        vec<int> best_clusters;
         for (int round = 0; round < NUM_ROUNDS[street]; round++) {
             init_centre();
             init_data();
-            float best_score = get_score();
 
             for (int i = 0; i < NUM_ITERATIONS[street]; i++) 
                 do_iteration();
         
             float score = get_score();
             if (score >= best_score) continue;
-            best_score = score;
+            best_score = score, best_clusters = clusters;
         }
-        print_clusters(street);
+        print_clusters(best_clusters, street);
     }
 
     auto end_time = chrono::high_resolution_clock::now();

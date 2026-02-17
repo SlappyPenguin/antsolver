@@ -12,7 +12,7 @@ template<typename T>
 using vec = vector<T>; 
 
 enum class Action : int {
-    Nothing, Fold, CheckCall,
+    Fold, CheckCall,
     Bet25, Bet50, Bet75,
     Bet100, Bet200, Bet400, AllIn
 };

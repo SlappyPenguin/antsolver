@@ -1,48 +1,42 @@
 #include <iostream>
 #include <fstream>
 #include <array>
+using namespace std;
+
+constexpr size_t X = 55190538;   // <-- set your constant here
+constexpr int MAXV = 1000;
 
 int main() {
-    const std::string filename = "turn_clusters.bin";
-    constexpr size_t X = 55190538;    // number of long longs to skip / shorts to read
-    constexpr int MAXV = 1000;       // shorts are in [0, 999]
-
-    std::ifstream file(filename, std::ios::binary);
+    ifstream file("turn_clusters.bin", ios::binary);
     if (!file) {
-        std::cerr << "Failed to open file\n";
+        cerr << "Failed to open file\n";
         return 1;
     }
 
     // Skip X long longs
-    std::streamoff offset = static_cast<std::streamoff>(X) * sizeof(long long);
-    file.seekg(offset, std::ios::beg);
-    if (!file) {
-        std::cerr << "Seek failed\n";
-        return 1;
-    }
+    file.seekg(X * sizeof(long long), ios::beg);
 
-    std::array<unsigned long long, MAXV> freq{};  // frequency array, zero-initialized
-    short value;
+    // Frequency array
+    array<long long, MAXV> freq{};
+    freq.fill(0);
 
-    // Read X shorts and count
-    for (size_t i = 0; i < X; ++i) {
+    // Read and count
+    for (size_t i = 0; i < X; i++) {
+        short value;
         file.read(reinterpret_cast<char*>(&value), sizeof(short));
         if (!file) {
-            std::cerr << "Error reading short at index " << i << "\n";
+            cerr << "Unexpected EOF\n";
             return 1;
         }
 
-        if (value < 0 || value >= MAXV) {
-            std::cerr << "Short value out of range at index " << i << "\n";
-            return 1;
-        }
-
-        ++freq[value];
+        if (value >= 0 && value < MAXV)
+            freq[value]++;
     }
 
     // Print frequencies
-    for (int i = 0; i < MAXV; ++i) {
-        std::cout << i << " : " << freq[i] << "\n";
+    for (int i = 0; i < MAXV; i++) {
+        if (freq[i] > 0)
+            cout << i << " " << freq[i] << "\n";
     }
 
     return 0;
