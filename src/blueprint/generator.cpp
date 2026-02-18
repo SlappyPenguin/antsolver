@@ -1,8 +1,15 @@
+/*
+Generates random games for MCCFR to train on. In future, I'd like the MCCFR to do chance branching while it's 
+training (i.e. every time it gets to a new street, generate a card during training), but for now, I make every 
+iteration use the same random card rollouts.
+*/
+
 #include <bits/stdc++.h>
 #include "../../include/random.h"
 #include "../../include/solver.h"
 #include "../../include/rank.h"
 #include "../../include/convert.h"
+#include "../../include/init.h"
 using namespace std;
 
 constexpr int NUM_GAMES = 100000;
@@ -14,16 +21,6 @@ const arr<str, NUM_STREETS> CLUSTERS_FILE = {
 const str GAMESTATES_FILE = "../data/gamestates.bin";
 
 arr<Map<short>, NUM_STREETS> clusters;
-void init_clusters() {
-    for (int street = 0; street < NUM_STREETS; street++) {
-        ifstream file(CLUSTERS_FILE[street], ios::binary);
-        Map<short>& cluster = clusters[street];
-        lint size = NUM_SETS[street];
-        cluster.keys.resize(size), cluster.values.resize(size);
-        read_range(file, cluster.keys), read_range(file, cluster.values);
-    }
-}
-
 vec<Gamestate> gamestate(NUM_GAMES);
 void rollout(int thread_id) {
     int num_per_thread = NUM_GAMES / NUM_THREADS;
@@ -72,7 +69,7 @@ void print_gamestate() {
 }
 
 int main() {
-    init_ranks(), init_clusters();
+    init_ranks(), init_clusters(clusters, CLUSTERS_FILE);
 
     cout << "Generating for... ";
     auto start_time = chrono::high_resolution_clock::now();

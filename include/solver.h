@@ -45,6 +45,7 @@ constexpr int SMALL_BLIND = 50;
 constexpr int BIG_BLIND = 100;
 constexpr int STACK = 20000;
 constexpr int NUM_INTERVALS = 10;
+constexpr float BIAS_MULTIPLIER = 10;
 constexpr lint GIGABYTE = 1ll << 30;
 constexpr arr<int, NUM_STREETS> NUM_CLUSTERS = {169, 1000, 1000, 1000};
 constexpr arr<int, NUM_BUCKETS> BUCKET_SIZE = {30, 1396, 17896, 121538, 30, 1396, 17896, 121538, 527589};

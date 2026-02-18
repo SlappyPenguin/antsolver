@@ -13,7 +13,7 @@ strengths:
 	-o ../../build/strengths
 
 distributions:
-	g++ distributions.cpp ../convert/convert.cpp \
+	g++ distributions.cpp ../helper/convert.cpp \
 	-std=c++20 \
 	-Wall -O3 -march=native -flto -funroll-loops -pthread \
 	-o ../../build/distributions
