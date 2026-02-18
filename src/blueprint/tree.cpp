@@ -1,10 +1,9 @@
 /*
 Builds the tree of possible bet sequences (not accounting for cards), according to our chosen bet abstraction:
 
-1) At any time, folding, checking/calling and going all-in are allowed.
+1) At any time, folding and checking/calling are allowed.
 
-2) Bet/raise sizes are expressed as % of pot. However, for raises, this pot size is the hypothetical size after
-we've called the opponent's bet (https://blog.gtowizard.com/how-to-calculate-raises-in-poker/).
+2) Unless the last move was all-in, going all-in is allowed.
 
 3) Additionally, for the first 3 bets of each street, these are the allowed sizes:
     Preflop:
@@ -23,160 +22,205 @@ we've called the opponent's bet (https://blog.gtowizard.com/how-to-calculate-rai
         1st: 50%, 75%, 100%, 200%, 400%
         2nd: 50%, 100%, 200%, 400%
         3rd: 100%
+
+4) Apart from folding and checking/calling, we only allow the first action which requires a certain amount of 
+contribution to pot.
+
+NOTE: bet/raise sizes are expressed as % of pot. However, for raises, this pot size is the hypothetical size after
+we've called the opponent's bet (https://blog.gtowizard.com/how-to-calculate-raises-in-poker/).
 */
 
 #include <bits/stdc++.h>
 #include "../../include/solver.h"
 using namespace std;
 
-constexpr arr<arr<vec<Action>, 3>, 4> BETS = {{
+constexpr int MAX_NUM_CONSEC_BETS = 3;
+constexpr int NUM_ROUNDS_PER_STREET = 6;
+const str BETSTATES_FILE = "../data/betstates.bin";
+const arr<arr<vec<Action>, MAX_NUM_CONSEC_BETS>, NUM_STREETS> ALLOWED_BETS = {{
     {vec<Action>{Action::Bet50, Action::Bet100}, 
      vec<Action>{Action::Bet50, Action::Bet100}, 
      vec<Action>{Action::Bet50, Action::Bet100}},
-
     {vec<Action>{Action::Bet25, Action::Bet50, Action::Bet75, Action::Bet100}, 
      vec<Action>{Action::Bet50, Action::Bet100}, 
      vec<Action>{Action::Bet50, Action::Bet100}},
-
     {vec<Action>{Action::Bet50, Action::Bet75, Action::Bet100, Action::Bet200, Action::Bet400}, 
      vec<Action>{Action::Bet50, Action::Bet100}, 
      vec<Action>{Action::Bet100}},
-
     {vec<Action>{Action::Bet50, Action::Bet75, Action::Bet100, Action::Bet200, Action::Bet400}, 
      vec<Action>{Action::Bet50, Action::Bet100, Action::Bet200, Action::Bet400}, 
      vec<Action>{Action::Bet100}}
 }};
 
-
 struct State {
-    arr<Action, 24> actions = {NOTHING};
+    arr<Action, NUM_STREETS * NUM_ROUNDS_PER_STREET> actions = {};
     int round = 0, player = 0;
+    bool is_leaf = false;
     int pot = SMALL_BLIND + BIG_BLIND;
-    arr<int, 2> bet = {SMALL_BLIND, BIG_BLIND};
+    arr<int, 2> stack = {STACK - SMALL_BLIND, STACK - BIG_BLIND};
+    arr<int, 2> contribution = {SMALL_BLIND, BIG_BLIND};
+    int num_consec_bets = 0, min_bet = BIG_BLIND;
 
-    inline int get_opp() {
+    inline int get_opp() const {
         return !player;
     }
-    inline int get_stack() {
-        return STACK - bet[player] - (pot - bet[player] - bet[get_opp()]) / 2;
+    inline int get_street() const {
+        return round / NUM_ROUNDS_PER_STREET;
     }
-    inline int get_street() {
-        return round / 6;
+    inline bool is_street_start() const {
+        return (round % NUM_ROUNDS_PER_STREET == 0);
     }
-    bool is_leaf() {
-        // If the game ends prematurely (fold or all-in call) round always moves up by 1
-        if (round == 0) return false;
-        Action last_action = actions[round - 1];
-        if (last_action == FOLD) return true;
-        
-        if (round == 1) return false;
-        Action last_action2 = actions[round - 2];
-        if (last_action2 == ALL_IN && last_action == CHECK_CALL) return true;
-
-        if (round == 24) return true;
-        return false;
+    inline int get_check_call_amount(Action action) const {
+        return contribution[!player] - contribution[player];
     }
-    State get_next(Action action, int req) {
-        State new_state = {actions, round, player, pot, bet};
-        
-        new_state.actions[round] = action;
-        new_state.pot += req, new_state.bet[player] += req; 
-        
-        // If the game ends prematurely (fold or all-in call) round always moves up by 1
-        bool new_street = (action == CHECK_CALL && round % 6 != 0 && actions[round - 1] != ALL_IN);
-        if (!new_street) {
-            new_state.round++; 
-            new_state.player = get_opp();
-        } else {
-            new_state.round = round - (round % 6) + 6;
-            new_state.player = 1;
-            new_state.bet = {0, 0};
+    inline int get_action_amount(Action action) const {
+        int amount_to_check_call = get_check_call_amount(action);
+        int amount_to_action = 0;
+        int pot_after_check_call = pot + amount_to_check_call;
+        switch (action) {
+            case Action::Fold: amount_to_action = 0; break;
+            case Action::CheckCall: amount_to_action = amount_to_check_call; break;
+            case Action::AllIn: amount_to_action = stack[player]; break;
+            default: amount_to_action = amount_to_check_call + 
+                                        pot_after_check_call * POT_PERCENT[(int) action - (int) Action::Fold];
         }
-        return new_state;
+        return amount_to_action;
+    }
+    // Does not check for whether we actually are allowed to do this action
+    State get_next_state(Action action) const {
+        State next = *this;
+        next.actions[round] = action;
+
+        int amount_to_check_call = get_check_call_amount(action);
+        int amount_to_action = get_action_amount(action);
+        next.stack[player] -= amount_to_action;
+        next.contribution[player] += amount_to_action, next.pot += amount_to_action;
+
+        bool is_bet = (action != Action::Fold && action != Action::CheckCall);
+        next.num_consec_bets = (is_bet) ? num_consec_bets + 1 : 0;
+        next.min_bet = max(amount_to_action - amount_to_check_call, BIG_BLIND);
+
+        bool is_fold = (action == Action::Fold);
+        bool is_last_call_in_street = (!is_street_start() && action == Action::CheckCall);
+        bool is_all_in_call = (is_last_call_in_street && actions[round - 1] == Action::AllIn);
+        bool is_last_call_in_game = (is_last_call_in_street && get_street() == (int) Street::River);
+        
+        if (is_fold || is_all_in_call || is_last_call_in_game) {
+            next.is_leaf = true;
+        } else if (is_last_call_in_street) {
+            next.round = round - (round % NUM_ROUNDS_PER_STREET) + NUM_ROUNDS_PER_STREET;
+            next.player = 1;
+            next.contribution = {};
+            next.num_consec_bets = 0;
+            next.min_bet = BIG_BLIND;
+        } else {
+            next.round++;
+            next.player = get_opp();
+        }
+        return next;
     }
     void print() {
-        cout << "New state-------------------------" << endl;
+        cout << "New state ==================================" << endl;
         cout << "Actions: ";
-        for (int i = 0; i <= 23; i++)
-            cout << actions[i] << " ";
+        for (int i = 0; i < NUM_STREETS * NUM_ROUNDS_PER_STREET; i++)
+            cout << ACTION_NAME.at(actions[i]) << " ";
         cout << endl;
         cout << "Round: " << round << endl;
         cout << "Player: " << player << endl;
         cout << "Pot: " << pot << endl;
-        cout << "Bets: " << bet[0] << " " << bet[1] << endl;
+        cout << "Contributions: " << contribution[0] << " " << contribution[1] << endl;
     }
 };
+struct Child {
+    Action action = {};
+    int bucket = 0;
+    int id_in_bucket = 0;
+};
 
-arr<int, 9> num_nodes;
-arr<int, NUM_NODES> player, street;
-arr<vec<pair<Action, int>>, NUM_NODES> children;
-arr<pair<Type, int>, NUM_NODES> payoff;
-int traverse(State state = {}, int min_bet = BIG_BLIND, int num_bets = 0) {
-    int bucket = (state.is_leaf()) ? 8 : 4 * state.player + state.get_street(); 
+arr<int, NUM_BUCKETS> num_nodes;
+arr<vec<int>, NUM_BUCKETS> player, street;
+arr<vec<vec<Child>>, NUM_BUCKETS> children;
+arr<vec<Betstate::Payoff>, NUM_BUCKETS> payoffs;
+pair<int, int> traverse(State state = {}) {
+    int bucket = state.is_leaf ? NUM_BUCKETS - 1 : NUM_STREETS * state.player + state.get_street();
     num_nodes[bucket]++;
-    int id = num_nodes[bucket] - 1 + CUM_BUCKET_SIZE[bucket];
-    player[id] = state.player, street[id] = state.get_street();
+    int id_in_bucket = num_nodes[bucket] - 1;
+    player[bucket].push_back(state.player), street[bucket].push_back(state.get_street());
     
-    if (state.is_leaf()) {
-        int opp_stack = 2 * STACK - state.pot - state.get_stack();
-        int amount = STACK - opp_stack;
-        if (state.actions[state.round - 1] == FOLD) {
-            payoff[id] = {FIXED, (state.player == 0) ? amount : -amount};
-        } else payoff[id] = {UNFIXED, amount}; // If it ends with CHECK_CALL, both stand to win the same
-        return id;
+    if (state.is_leaf) {
+        int amount = STACK - state.stack[state.get_opp()];
+        // Leaf nodes don't advance round
+        bool is_fold = (state.actions[state.round] == Action::Fold);
+        Betstate::Payoff payoff = {};
+        payoff.type = is_fold ? PayoffType::Fixed : PayoffType:: Unfixed;
+        // Leaf nodes don't advance player
+        payoff.amount = is_fold ? ((state.player == 0) ? -amount : +amount) : amount;
+        payoffs[bucket].push_back(payoff), children[bucket].push_back({});
+        return {bucket, id_in_bucket};
     }
-    payoff[id] = {NON_LEAF, 0};
 
-    vec<Action> actions;
-    actions.push_back(FOLD), actions.push_back(CHECK_CALL);
-    bool can_bet = (state.round == 0 || state.actions[state.round - 1] != ALL_IN);
-    if (can_bet) {
-        if (num_bets <= 2) 
-            actions.insert(actions.end(), BETS[state.get_street()][num_bets].begin(), BETS[state.get_street()][num_bets].end());
-        actions.push_back(ALL_IN);
+    vec<Action> actions = {Action::Fold, Action::CheckCall, Action::AllIn};
+    if (state.num_consec_bets < MAX_NUM_CONSEC_BETS) {
+        vec<Action> allowed_bets = ALLOWED_BETS[state.get_street()][state.num_consec_bets];
+        append_list(actions, allowed_bets);
     }
     
-    int player = state.player, opp = state.get_opp();
+    set<int> amounts_seen;
+    vec<Child> child_list;
     for (Action action : actions) {
-        int stack = state.get_stack();
-        int req = 0, req_check_call = state.bet[opp] - state.bet[player]; 
-        int new_pot = state.pot + req_check_call;
+        int amount_to_action = state.get_action_amount(action);
 
-        switch (action) {
-            case FOLD: req = 0; break;
-            case CHECK_CALL: req = req_check_call; break;
-            case ALL_IN: req = stack; break;
-            default: req = req_check_call + roundf(new_pot * MULTIPLIER[action - BET_25]); break;
-        }
+        if (amount_to_action > state.stack[state.player]) continue;
 
-        if (req > stack) continue;
-        // No 2 actions should have the same req except for FOLD and CHECK_CALL
-        if (req == stack && action != ALL_IN && action != CHECK_CALL) continue;
+        // No 2 actions should require the same contribution, apart from folding and checking/calling
+        bool is_fold = (action == Action::Fold);
+        bool is_check_call = (action == Action::CheckCall); 
+        if (!is_fold && !is_check_call && amounts_seen.count(amount_to_action)) continue;
+        amounts_seen.insert(amount_to_action);
 
-        bool is_bet = (action != FOLD && action != CHECK_CALL);
-        if (is_bet && action != ALL_IN && req - req_check_call < min_bet) continue;
+        bool is_bet = (action != Action::Fold && action != Action::CheckCall);
+        bool is_all_in = (action == Action::AllIn);
+        if (is_bet && !is_all_in && amount_to_action < state.min_bet) continue;
 
-        State new_state = state.get_next(action, req);
-        int new_min_bet = (new_state.round % 6 == 0) ? BIG_BLIND : max(req - req_check_call, BIG_BLIND);
-        int new_num_bets = is_bet ? num_bets + 1 : 0;
-        int child_id = traverse(new_state, new_min_bet, new_num_bets);
-        children[id].push_back({action, child_id});
+        State next = state.get_next_state(action);
+        pair<int, int> child_info = traverse(next);
+        child_list.push_back({action, child_info.first, child_info.second});
     }    
-    return id;
+    payoffs[bucket].push_back({PayoffType::NonLeaf, 0}), children[bucket].push_back(child_list);
+    return {bucket, id_in_bucket};
+}
+
+void print_betstates() {
+    arr<int, NUM_BUCKETS> cum_bucket_size = {};
+    for (int i = 1; i < NUM_BUCKETS; i++)
+        cum_bucket_size[i] = cum_bucket_size[i - 1] + num_nodes[i - 1];
+    
+    ofstream file(BETSTATES_FILE, ios::binary);
+    for (int i = 0; i < NUM_BUCKETS; i++) {
+        for (int j = 0; j < num_nodes[i]; j++) {
+            write(file, player[i][j]), write(file, street[i][j]);
+            int num_children = children[i][j].size();
+            write(file, num_children);
+            for (int k = 0; k < num_children; k++) {
+                const Child& child = children[i][j][k];
+                Action action = child.action;
+                int id = cum_bucket_size[child.bucket] + child.id_in_bucket;
+                write(file, action), write(file, id);
+            }
+            write(file, payoffs[i][j].type), write(file, payoffs[i][j].amount);
+        }
+    }
 }
 
 int main() {
-    traverse();
+    cout << "Generating for... ";
+    auto start_time = chrono::high_resolution_clock::now();
 
-    ofstream out("betstates.bin", ios::binary);
-    auto write = [&out](auto& x) {
-        out.write(reinterpret_cast<char*>(&x), sizeof(x));
-    };
-    for (int i = 0; i <= NUM_NODES - 1; i++) {
-        write(player[i]), write(street[i]);
-        int num_children = children[i].size(); write(num_children);
-        for (int j = 0; j <= num_children - 1; j++) 
-            write(children[i][j].fir), write(children[i][j].sec);
-        write(payoff[i].fir), write(payoff[i].sec);
-    }
+    traverse();
+    print_betstates();
+
+    auto end_time = chrono::high_resolution_clock::now();
+    chrono::duration<doub> elapsed_time = end_time - start_time;
+    cout << fixed << setprecision(3);
+    cout << elapsed_time.count() << " seconds" << '\n';
 }

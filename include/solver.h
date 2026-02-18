@@ -153,6 +153,10 @@ inline arr<int, NUM_FINAL_CARDS> get_cards(lint id, int street) {
 inline void erase_value(vec<int>& list, int value) {
     list.erase(find(list.begin(), list.end(), value));
 }
+template<typename T>
+inline void append_list(vec<T>& list, const vec<T>& to_append) {
+    list.insert(list.end(), to_append.begin(), to_append.end());
+}
 inline void partial_shuffle(vec<int>& list, int num_to_shuffle) {
     int last_index = list.size() - 1;    
     for (int i = 0; i < num_to_shuffle; i++) {
