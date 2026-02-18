@@ -1,43 +1,38 @@
 #include <iostream>
 #include <fstream>
-#include <array>
 using namespace std;
 
-constexpr size_t X = 55190538;   // <-- set your constant here
-constexpr int MAXV = 1000;
-
 int main() {
-    ifstream file("turn_clusters.bin", ios::binary);
+    int X = 100000;
+
+    ifstream file("gamestates.bin", ios::binary);
     if (!file) {
-        cerr << "Failed to open file\n";
+        cerr << "Error opening file\n";
         return 1;
     }
 
-    // Skip X long longs
-    file.seekg(X * sizeof(long long), ios::beg);
+    int freq[3] = {};
 
-    // Frequency array
-    array<long long, MAXV> freq{};
-    freq.fill(0);
+    int buffer[9];
+    for (int i = 0; i < X; i++) {
+        file.read(reinterpret_cast<char*>(buffer), sizeof(buffer));
 
-    // Read and count
-    for (size_t i = 0; i < X; i++) {
-        short value;
-        file.read(reinterpret_cast<char*>(&value), sizeof(short));
         if (!file) {
-            cerr << "Unexpected EOF\n";
+            cerr << "Error reading block " << i << "\n";
             return 1;
         }
 
-        if (value >= 0 && value < MAXV)
-            freq[value]++;
+        // for (int j = 0; j < 9; j++) {
+        //     cout << buffer[j];
+        //     if (j < 8) cout << " ";
+        // }
+        // cout << "\n";
+
+        freq[buffer[0]]++;
     }
 
-    // Print frequencies
-    for (int i = 0; i < MAXV; i++) {
-        if (freq[i] > 0)
-            cout << i << " " << freq[i] << "\n";
-    }
+    cout << freq[0] << " " << freq[1] << " " << freq[2] << endl;
 
+    file.close();
     return 0;
 }
