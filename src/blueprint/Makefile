@@ -1,4 +1,4 @@
-all: tree generator
+all: tree generator trainer
 
 tree: 
 	g++ tree.cpp \
@@ -11,3 +11,9 @@ generator:
 	-std=c++20 \
 	-Wall -O3 -march=native -flto -funroll-loops -pthread \
 	-o ../../build/generator
+
+trainer:
+	g++ trainer.cpp ../helper/init.cpp \
+	-std=c++20 \
+	-Wall -O3 -march=native -flto -funroll-loops -pthread \
+	-o ../../build/trainer

@@ -129,7 +129,7 @@ inline int get_non_leaf_bucket(int player, int street) {
 inline int get_info_id(int player, int street, int bet_id) {
     return bet_id - CUM_BUCKET_SIZE[get_non_leaf_bucket(player, street)];
 }
-inline arr<int, 2> get_thread_range(int total, int num_threads, int thread_id) {
+inline pair<int, int> get_thread_range(int total, int num_threads, int thread_id) {
     int num_per_thread = total / num_threads;
     int first_game = thread_id * num_per_thread;
     int last_game = (thread_id == num_threads - 1) ? total - 1 : (thread_id + 1) * num_per_thread - 1;

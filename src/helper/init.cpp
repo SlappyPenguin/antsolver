@@ -12,8 +12,8 @@ void init_clusters(arr<Map<short>, NUM_STREETS>& clusters, const arr<str, NUM_ST
     }
 }
 
-void init_betstate(arr<Betstate, NUM_BETSTATES>& betstate, str betstate_file) {
-    ifstream file(betstate_file, ios::binary);
+void init_betstate(arr<Betstate, NUM_BETSTATES>& betstate, str betstates_file) {
+    ifstream file(betstates_file, ios::binary);
     for (int i = 0; i < NUM_BETSTATES; i++) {
         Betstate& bet = betstate[i];
         read(file, bet.player), read(file, bet.street);    

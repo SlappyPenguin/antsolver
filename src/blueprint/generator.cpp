@@ -23,15 +23,12 @@ const str GAMESTATES_FILE = "../data/gamestates.bin";
 arr<Map<short>, NUM_STREETS> clusters;
 vec<Gamestate> gamestate(NUM_GAMES);
 void rollout(int thread_id) {
-    int num_per_thread = NUM_GAMES / NUM_THREADS;
-    int first_game = thread_id * num_per_thread;
-    int last_game = (thread_id == NUM_THREADS - 1) ? NUM_GAMES - 1 : (thread_id + 1) * num_per_thread - 1;
-
+    pair<int, int> range = get_thread_range(NUM_GAMES, NUM_THREADS, thread_id);
     vec<int> deck(NUM_CARDS);
     iota(deck.begin(), deck.end(), 0);
     arr<arr<int, NUM_FINAL_CARDS>, 2> cards;
 
-    for (int game = first_game; game <= last_game; game++) {
+    for (int game = range.first; game <= range.second; game++) {
         partial_shuffle(deck, 2 * NUM_HOLE_CARDS + NUM_PUBLIC_CARDS);
         for (int player : {0, 1}) {
             for (int i = 0; i < NUM_HOLE_CARDS; i++) 
