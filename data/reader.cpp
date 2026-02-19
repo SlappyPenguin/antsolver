@@ -3,35 +3,27 @@
 using namespace std;
 
 int main() {
-    int X = 100000;
+    const int X = 50;        // number of lines to read
+    const int PER_LINE = 10;
 
-    ifstream file("gamestates.bin", ios::binary);
+    ifstream file("betstates.bin", ios::binary);
     if (!file) {
-        cerr << "Error opening file\n";
+        cout << "File not found\n";
         return 1;
     }
 
-    int freq[3] = {};
+    int value;
 
-    int buffer[9];
-    for (int i = 0; i < X; i++) {
-        file.read(reinterpret_cast<char*>(buffer), sizeof(buffer));
-
-        if (!file) {
-            cerr << "Error reading block " << i << "\n";
-            return 1;
+    for (int i = 0; i < X; ++i) {
+        for (int j = 0; j < PER_LINE; ++j) {
+            if (!file.read(reinterpret_cast<char*>(&value), sizeof(int))) {
+                cout << "Unexpected end of file\n";
+                return 1;
+            }
+            cout << value << " ";
         }
-
-        // for (int j = 0; j < 9; j++) {
-        //     cout << buffer[j];
-        //     if (j < 8) cout << " ";
-        // }
-        // cout << "\n";
-
-        freq[buffer[0]]++;
+        cout << "\n";
     }
-
-    cout << freq[0] << " " << freq[1] << " " << freq[2] << endl;
 
     file.close();
     return 0;

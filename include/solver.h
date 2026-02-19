@@ -45,6 +45,8 @@ constexpr int SMALL_BLIND = 50;
 constexpr int BIG_BLIND = 100;
 constexpr int STACK = 20000;
 constexpr int NUM_INTERVALS = 10;
+constexpr int MAX_NUM_CONSEC_BETS = 3;
+constexpr int NUM_ROUNDS_PER_STREET = 6;
 constexpr float BIAS_MULTIPLIER = 10;
 constexpr lint GIGABYTE = 1ll << 30;
 constexpr arr<int, NUM_STREETS> NUM_CLUSTERS = {169, 1000, 1000, 1000};
@@ -128,6 +130,9 @@ inline int get_non_leaf_bucket(int player, int street) {
 }
 inline int get_info_id(int player, int street, int bet_id) {
     return bet_id - CUM_BUCKET_SIZE[get_non_leaf_bucket(player, street)];
+}
+inline bool operator<(Action x, Action y) {
+    return ((int) x < (int) y);
 }
 inline pair<int, int> get_thread_range(int total, int num_threads, int thread_id) {
     int num_per_thread = total / num_threads;
@@ -249,7 +254,7 @@ struct Blueprint {
         for (int i = 0; i < num_actions; i++) 
             strat[i] = (sum == 0) ? 1.0 / num_actions : info.cum_strat[i] / sum;
     }
-    void init_from_blueprint(const Blueprint& blue, const Betstate& bet, Bias bias, float multiplier) {
+    void init_from_blueprint(const Blueprint& blue, const Betstate& bet, Bias bias) {
         num_actions = blue.num_actions;
         float sum = 0;
         for (int i = 0; i < num_actions; i++) {
@@ -257,7 +262,7 @@ struct Blueprint {
             bool do_bias = (bias == Bias::Folding && action == Action::Fold) || 
                            (bias == Bias::CheckCalling && action == Action::CheckCall) ||
                            (bias == Bias::Betting && action != Action::Fold && action != Action::CheckCall);
-            strat[i] = blue.strat[i] * (do_bias ? multiplier : 1.0);
+            strat[i] = blue.strat[i] * (do_bias ? BIAS_MULTIPLIER : 1.0);
             sum += strat[i];
         }
         for (int i = 0; i < num_actions; i++)
@@ -289,5 +294,72 @@ struct Gamestate {
     arr<arr<int, NUM_STREETS>, 2> cluster = {};
 };
 
+struct Playstate {
+    arr<Action, NUM_STREETS * NUM_ROUNDS_PER_STREET> actions = {};
+    int round = 0, player = 0;
+    bool is_leaf = false;
+    int pot = SMALL_BLIND + BIG_BLIND;
+    arr<int, 2> stack = {STACK - SMALL_BLIND, STACK - BIG_BLIND};
+    arr<int, 2> contribution = {SMALL_BLIND, BIG_BLIND};
+    int num_consec_bets = 0, min_bet = BIG_BLIND;
 
+    inline int get_opp() const {
+        return !player;
+    }
+    inline int get_street() const {
+        return round / NUM_ROUNDS_PER_STREET;
+    }
+    inline bool is_street_start() const {
+        return (round % NUM_ROUNDS_PER_STREET == 0);
+    }
+    inline int get_check_call_amount(Action action) const {
+        return contribution[!player] - contribution[player];
+    }
+    inline int get_action_amount(Action action) const {
+        int amount_to_check_call = get_check_call_amount(action);
+        int pot_after_check_call = pot + amount_to_check_call;
+        int amount_to_action = 0;
+        switch (action) {
+            case Action::Fold: amount_to_action = 0; break;
+            case Action::CheckCall: amount_to_action = amount_to_check_call; break;
+            case Action::AllIn: amount_to_action = stack[player]; break;
+            default: amount_to_action = amount_to_check_call + 
+                                        roundf(pot_after_check_call * POT_PERCENT[(int) action]);
+        }
+        return amount_to_action;
+    }
+    // Does not check for whether we actually are allowed to do this action
+    Playstate get_next_state(Action action) const {
+        Playstate next = *this;
+        next.actions[round] = action;
+
+        int amount_to_check_call = get_check_call_amount(action);
+        int amount_to_action = get_action_amount(action);
+        next.stack[player] -= amount_to_action;
+        next.contribution[player] += amount_to_action, next.pot += amount_to_action;
+
+        bool is_bet = (action != Action::Fold && action != Action::CheckCall);
+        next.num_consec_bets = (is_bet) ? num_consec_bets + 1 : 0;
+        next.min_bet = max(amount_to_action - amount_to_check_call, BIG_BLIND);
+
+        bool is_fold = (action == Action::Fold);
+        bool is_last_call_in_street = (!is_street_start() && action == Action::CheckCall);
+        bool is_all_in_call = (is_last_call_in_street && actions[round - 1] == Action::AllIn);
+        bool is_last_call_in_game = (is_last_call_in_street && get_street() == (int) Street::River);
+        
+        if (is_fold || is_all_in_call || is_last_call_in_game) {
+            next.is_leaf = true;
+        } else if (is_last_call_in_street) {
+            next.round = round - (round % NUM_ROUNDS_PER_STREET) + NUM_ROUNDS_PER_STREET;
+            next.player = 1;
+            next.contribution = {};
+            next.num_consec_bets = 0;
+            next.min_bet = BIG_BLIND;
+        } else {
+            next.round++;
+            next.player = get_opp();
+        }
+        return next;
+    }
+};
 

@@ -54,6 +54,36 @@ void init_blueprint(
     }
 }
 
+void init_infoset(
+    const arr<Betstate, NUM_BETSTATES>& betstate,
+    arr<arr<arr<vec<Infoset>, MAX_BUCKET_SIZE>, NUM_STREETS>, 2>& infoset, 
+    str infosets_file
+) {
+    ifstream file(infosets_file, ios::binary);
+    bool is_no_file = (!file);
+    for (int i : {0, 1}) {
+        for (int j = 0; j < NUM_STREETS; j++) {
+            int bucket = get_non_leaf_bucket(i, j);
+            int bucket_size = BUCKET_SIZE[bucket];
+            int num_clusters = NUM_CLUSTERS[j];
+            for (int k = 0; k < bucket_size; k++) {
+                int bet_id = CUM_BUCKET_SIZE[bucket] + k;
+                const Betstate& bet = betstate[bet_id];
+                infoset[i][j][k].resize(num_clusters);
+                for (int l = 0; l < num_clusters; l++) {
+                    Infoset& info = infoset[i][j][k][l];
+                    info.num_actions = bet.children.size();
+                    if (is_no_file) continue;    
+                    for (int m = 0; m < info.num_actions; m++)
+                        read(file, info.cum_regret[i]);
+                    for (int m = 0; m < info.num_actions; m++)
+                        read(file, info.cum_strat[i]);
+                }
+            }
+        }
+    }
+}
+
 static void dfs_outside_limit(
     const arr<Betstate, NUM_BETSTATES>& betstate, 
     arr<arr<arr<arr<vec<Blueprint>, MAX_BUCKET_SIZE>, NUM_STREETS>, 2>, NUM_BIASES>& blueprint,
@@ -71,7 +101,7 @@ static void dfs_outside_limit(
         for (int cluster = 0; cluster < num_clusters; cluster++) {
             const Blueprint& base_blue = blueprint[(int) Bias::Base][player][street][info_id][cluster];
             Blueprint& blue = blueprint[bias][player][street][info_id][cluster];
-            blue.init_from_blueprint(base_blue, bet, (Bias) bias, BIAS_MULTIPLIER);
+            blue.init_from_blueprint(base_blue, bet, (Bias) bias);
         } 
     }
     for (const Betstate::Child& child : bet.children)    

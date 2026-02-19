@@ -11,6 +11,11 @@ void init_blueprint(
     arr<arr<arr<arr<vec<Blueprint>, MAX_BUCKET_SIZE>, NUM_STREETS>, 2>, NUM_BIASES>& blueprint,
     str blueprint_file
 );
+void init_infoset(
+    const arr<Betstate, NUM_BETSTATES>& betstate,
+    arr<arr<arr<vec<Infoset>, MAX_BUCKET_SIZE>, NUM_STREETS>, 2>& infoset, 
+    str infosets_file
+);
 void init_search(
     const arr<Betstate, NUM_BETSTATES>& betstate, 
     arr<arr<arr<arr<vec<Blueprint>, MAX_BUCKET_SIZE>, NUM_STREETS>, 2>, NUM_BIASES>& blueprint,
