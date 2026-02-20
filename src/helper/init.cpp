@@ -74,10 +74,11 @@ void init_infoset(
                     Infoset& info = infoset[i][j][k][l];
                     info.num_actions = bet.children.size();
                     if (is_no_file) continue;    
+                    
                     for (int m = 0; m < info.num_actions; m++)
-                        read(file, info.cum_regret[i]);
+                        read(file, info.cum_regret[m]);
                     for (int m = 0; m < info.num_actions; m++)
-                        read(file, info.cum_strat[i]);
+                        read(file, info.cum_strat[m]);
                 }
             }
         }

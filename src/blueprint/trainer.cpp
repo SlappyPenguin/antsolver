@@ -86,9 +86,9 @@ void print_infoset() {
                 for (int l = 0; l < num_clusters; l++) {
                     Infoset& info = infoset[i][j][k][l];
                     for (int m = 0; m < info.num_actions; m++)
-                        write(file, info.cum_regret[i]);
+                        write(file, info.cum_regret[m]);
                     for (int m = 0; m < info.num_actions; m++)
-                        write(file, info.cum_strat[i]);
+                        write(file, info.cum_strat[m]);
                 }
             }
         }

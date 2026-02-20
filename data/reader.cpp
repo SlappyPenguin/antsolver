@@ -1,30 +1,34 @@
 #include <iostream>
 #include <fstream>
-using namespace std;
+#include <vector>
 
 int main() {
-    const int X = 50;        // number of lines to read
-    const int PER_LINE = 10;
+    std::size_t X, Y;
+    X = 100;
+    Y = 5;
 
-    ifstream file("betstates.bin", ios::binary);
+    std::ifstream file("blueprint.bin", std::ios::binary);
     if (!file) {
-        cout << "File not found\n";
+        std::cerr << "Failed to open a.bin\n";
         return 1;
     }
 
-    int value;
+    std::vector<float> buffer(X * Y);
 
-    for (int i = 0; i < X; ++i) {
-        for (int j = 0; j < PER_LINE; ++j) {
-            if (!file.read(reinterpret_cast<char*>(&value), sizeof(int))) {
-                cout << "Unexpected end of file\n";
-                return 1;
-            }
-            cout << value << " ";
-        }
-        cout << "\n";
+    file.read(reinterpret_cast<char*>(buffer.data()),
+              buffer.size() * sizeof(float));
+
+    std::size_t read_count = file.gcount() / sizeof(float);
+
+    for (std::size_t i = 0; i < read_count; ++i) {
+        std::cout << buffer[i] << " ";
+        if ((i + 1) % Y == 0)
+            std::cout << "\n";
     }
 
-    file.close();
+    // If file ended mid-line
+    if (read_count % Y != 0)
+        std::cout << "\n";
+
     return 0;
 }
