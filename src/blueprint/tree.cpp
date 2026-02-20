@@ -68,12 +68,11 @@ pair<int, int> traverse(Playstate play = {}) {
     children[bucket].push_back({}), payoffs[bucket].push_back({});
     
     if (play.is_leaf) {
-        int amount = STACK - play.stack[play.get_opp()];
-        // Leaf nodes don't advance round
+        // Leaf nodes don't advance player or round
+        int amount = STACK - play.stack[play.player];
         bool is_fold = (play.actions[play.round] == Action::Fold);
         Betstate::Payoff payoff = {};
         payoff.type = is_fold ? PayoffType::Fixed : PayoffType:: Unfixed;
-        // Leaf nodes don't advance player
         payoff.amount = is_fold ? ((play.player == 0) ? -amount : +amount) : amount;
         payoffs[bucket][id_in_bucket] = payoff;
         return {bucket, id_in_bucket};

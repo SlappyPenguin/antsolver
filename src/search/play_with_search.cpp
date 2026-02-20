@@ -155,9 +155,6 @@ void play(int game) {
                 if (!at_preflop) {
                     const Infoset& info = infoset[player][info_id][cluster];
                     blue.init_from_infoset(info);
-
-                    for (int i = 0; i < info.num_actions; i++) 
-                        cout << info.cum_regret[i] << " " << info.cum_strat[i] << endl;
                 } else {
                     blue = blueprint[(int) Bias::Base][player][street][info_id][cluster];
                 }
@@ -167,12 +164,6 @@ void play(int game) {
                 str input = get_input(ACTION_VALUE, "Choose my action:", 1).back();
                 action_id = get_action_id(bet, ACTION_VALUE.at(input));
             } else {
-                if (!at_preflop) {
-                    const Infoset& info = infoset[player][info_id][cluster];
-                    for (int i = 0; i < info.num_actions; i++) 
-                        cout << info.cum_regret[i] << " " << info.cum_strat[i] << endl;
-                }
-
                 print_opp_actions(bet, play);
                 str input = get_input(ACTION_VALUE, "Choose opponent action:", 1).back();
                 action_id = get_action_id(bet, ACTION_VALUE.at(input));
