@@ -1,16 +1,5 @@
 /*
-Implements depth limited solving from https://arxiv.org/pdf/1805.08195, with the following modifications:
-
-- Solving is not done on the preflop.
-- We only resolve the abstracted subgame, i.e. off-tree actions are not allowed.
-- MCCFR is always used for resolving.
-- Leaf node values are evaluated using the bias strategy and random rollouts.
-- Unsafe solving is used, with probabilities based off the most recent search, if possible.
-- The player who gets to alter their strategy after leaf nodes is determined randomly, similar to in 
-  https://noambrown.github.io/papers/19-Science-Superhuman_Supp.pdf.
-
-NOTE: This code is not thread-safe, i.e. race conditions can happen. From testing it seems this is faster and has 
-no noticable effect on correctness.
+Same as play_with_search.cpp except solver is villain.
 */
 
 #include <bits/stdc++.h>
