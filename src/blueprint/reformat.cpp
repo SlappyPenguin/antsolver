@@ -8,8 +8,6 @@ strategy.
 #include "../../include/init.h"
 using namespace std;
 
-const str BETSTATES_FILE = "../data/betstates.bin";
-const str INFOSETS_FILE = "../data/infosets.bin";
 const str BLUEPRINT_FILE = "../data/blueprint.bin";
 
 arr<Betstate, NUM_BETSTATES> betstate;
@@ -35,8 +33,8 @@ void print_blueprint() {
 }
 
 int main() {
-    init_betstate(betstate, BETSTATES_FILE), init_infoset(betstate, infoset, INFOSETS_FILE);
-    
+    init_betstate(betstate), init_infoset(betstate, infoset);
+
     cout << "Reformatting for... ";
     auto start_time = chrono::high_resolution_clock::now();
 

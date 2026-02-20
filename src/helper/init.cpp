@@ -2,9 +2,19 @@
 #include "../../include/solver.h"
 using namespace std;
 
-void init_clusters(arr<Map<short>, NUM_STREETS>& clusters, const arr<str, NUM_STREETS>& clusters_file) {
+const str BETSTATES_FILE = "../data/betstates.bin";
+const str BLUEPRINT_FILE = "../data/blueprint.bin";
+const str INFOSETS_FILE = "../data/infosets.bin";
+const arr<str, NUM_STREETS> CLUSTERS_FILE = {
+    "../data/preflop_clusters.bin",
+    "../data/flop_clusters.bin", 
+    "../data/turn_clusters.bin", 
+    "../data/river_clusters.bin"
+};
+
+void init_clusters(arr<Map<short>, NUM_STREETS>& clusters) {
     for (int street = 0; street < NUM_STREETS; street++) {
-        ifstream file(clusters_file[street], ios::binary);
+        ifstream file(CLUSTERS_FILE[street], ios::binary);
         Map<short>& cluster = clusters[street];
         lint size = NUM_SETS[street];
         cluster.keys.resize(size), cluster.values.resize(size);
@@ -12,8 +22,8 @@ void init_clusters(arr<Map<short>, NUM_STREETS>& clusters, const arr<str, NUM_ST
     }
 }
 
-void init_betstate(arr<Betstate, NUM_BETSTATES>& betstate, str betstates_file) {
-    ifstream file(betstates_file, ios::binary);
+void init_betstate(arr<Betstate, NUM_BETSTATES>& betstate) {
+    ifstream file(BETSTATES_FILE, ios::binary);
     for (int i = 0; i < NUM_BETSTATES; i++) {
         Betstate& bet = betstate[i];
         read(file, bet.player), read(file, bet.street);    
@@ -29,10 +39,9 @@ void init_betstate(arr<Betstate, NUM_BETSTATES>& betstate, str betstates_file) {
 
 void init_blueprint(
     const arr<Betstate, NUM_BETSTATES>& betstate,                 
-    arr<arr<arr<arr<vec<Blueprint>, MAX_BUCKET_SIZE>, NUM_STREETS>, 2>, NUM_BIASES>& blueprint,
-    str blueprint_file
+    arr<arr<arr<arr<vec<Blueprint>, MAX_BUCKET_SIZE>, NUM_STREETS>, 2>, NUM_BIASES>& blueprint
 ) {
-    ifstream file(blueprint_file, ios::binary);
+    ifstream file(BLUEPRINT_FILE, ios::binary);
     int bias = (int) Bias::Base;
     for (int i : {0, 1}) {
         for (int j = 0; j < NUM_STREETS; j++) {
@@ -56,10 +65,9 @@ void init_blueprint(
 
 void init_infoset(
     const arr<Betstate, NUM_BETSTATES>& betstate,
-    arr<arr<arr<vec<Infoset>, MAX_BUCKET_SIZE>, NUM_STREETS>, 2>& infoset, 
-    str infosets_file
+    arr<arr<arr<vec<Infoset>, MAX_BUCKET_SIZE>, NUM_STREETS>, 2>& infoset
 ) {
-    ifstream file(infosets_file, ios::binary);
+    ifstream file(INFOSETS_FILE, ios::binary);
     bool is_no_file = (!file);
     for (int i : {0, 1}) {
         for (int j = 0; j < NUM_STREETS; j++) {

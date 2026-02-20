@@ -12,7 +12,6 @@ using namespace std;
 
 constexpr int NUM_GAMES = 100000;
 constexpr int NUM_THREADS = 12;
-const str BETSTATES_FILE = "../data/betstates.bin";
 const str GAMESTATES_FILE = "../data/gamestates.bin";
 const str INFOSETS_FILE = "../data/infosets.bin";
 
@@ -96,7 +95,7 @@ void print_infoset() {
 }
 
 int main() {
-    init_betstate(betstate, BETSTATES_FILE), init_gamestate(), init_infoset(betstate, infoset, INFOSETS_FILE);
+    init_betstate(betstate), init_gamestate(), init_infoset(betstate, infoset);
 
     cout << "Training for... ";
     auto start_time = chrono::high_resolution_clock::now();

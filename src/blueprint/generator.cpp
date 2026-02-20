@@ -14,10 +14,6 @@ using namespace std;
 
 constexpr int NUM_GAMES = 100000;
 constexpr int NUM_THREADS = 12;
-const arr<str, NUM_STREETS> CLUSTERS_FILE = {
-    "../data/preflop_clusters.bin", "../data/flop_clusters.bin",
-    "../data/turn_clusters.bin", "../data/river_clusters.bin", 
-};
 const str GAMESTATES_FILE = "../data/gamestates.bin";
 
 arr<Map<short>, NUM_STREETS> clusters;
@@ -66,7 +62,7 @@ void print_gamestate() {
 }
 
 int main() {
-    init_ranks(), init_clusters(clusters, CLUSTERS_FILE);
+    init_ranks(), init_clusters(clusters);
 
     cout << "Generating for... ";
     auto start_time = chrono::high_resolution_clock::now();

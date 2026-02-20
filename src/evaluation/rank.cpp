@@ -1,7 +1,7 @@
 
 /*
-Quickly and cleverly fetches the rank of any 7-card poker hand. In total, there are 7462 equivalent hands classes,
-where the higher rank the better.
+Quickly fetches the rank of any 7-card poker hand. In total, there are 7462 equivalent hands classes, where the 
+higher the rank is the better.
 */
 
 #include <bits/stdc++.h>

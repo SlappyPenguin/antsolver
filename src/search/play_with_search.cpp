@@ -1,11 +1,24 @@
 /*
-Plays with hero as the precomputed blueprint strategy.
+Implements depth limited solving from https://arxiv.org/pdf/1805.08195, with the following modifications:
+
+- Solving is not done on the preflop.
+- We only resolve the abstracted subgame, i.e. off-tree actions are not allowed.
+- MCCFR is always used for resolving.
+- Leaf node values are evaluated using the bias strategy and random rollouts.
+- Unsafe solving is used, with probabilities based off the most recent search, if possible.
+- The player who gets to alter their strategy after leaf nodes is determined randomly, similar to in 
+  https://noambrown.github.io/papers/19-Science-Superhuman_Supp.pdf.
+
+NOTE: This code is not thread-safe, i.e. race conditions can happen. From testing it seems this is faster and has 
+no noticable effect on correctness.
 */
 
 #include <bits/stdc++.h>
 #include "../../include/solver.h"
 #include "../../include/init.h"
 #include "../../include/convert.h"
+#include "../../include/search.h"
+#include "../../include/rank.h"
 using namespace std;
 
 arr<Betstate, NUM_BETSTATES> betstate;
@@ -14,6 +27,7 @@ arr<arr<vec<Infoset>, MAX_BUCKET_SIZE>, 2> infoset;
 arr<arr<vec<Infoset>, MAX_BUCKET_SIZE>, 2> frontier;
 arr<Map<short>, NUM_STREETS> clusters;
 void init() {
+    init_ranks();
     init_betstate(betstate);
     init_blueprint(betstate, blueprint);
     init_clusters(clusters);
@@ -101,6 +115,8 @@ void print_game_info(const Playstate& play, int position) {
 }
 
 void play(int game) {   
+    init_reach_prob();
+
     arr<int, NUM_FINAL_CARDS> cards = {};
     vec<int> remaining_cards(NUM_CARDS);
     iota(remaining_cards.begin(), remaining_cards.end(), 0);
@@ -113,9 +129,9 @@ void play(int game) {
     print_positions();
     int position = POSITION_VALUE.at(get_input(POSITION_VALUE, "Input my position:", 1).back());
     for (int street = 0; street < NUM_STREETS; street++) {
+        bool at_preflop = (street == (int) Street::Preflop);
         vec<str> inputs = get_input(CARD_VALUE, "Input " + STREET_NAME.at((Street) street) + " cards:", STREET_SIZE[street]);
         for (int i = 0; i < STREET_SIZE[street]; i++) {
-            bool at_preflop = (street == (int) Street::Preflop);
             int index = at_preflop ? i : CUM_STREET_SIZE[street - 1] + i;
             cards[index] = CARD_VALUE.at(inputs[i]);
             
@@ -124,6 +140,8 @@ void play(int game) {
             erase_value(remaining_cards, cards[index]);
         }
         print_cards(cards, street);
+
+        if (!at_preflop) search(cards, in_public, remaining_cards, bet_id);
        
         Betstate bet = betstate[bet_id];
         lint id = get_id(convert(cards, street), street);
@@ -133,17 +151,34 @@ void play(int game) {
 
             int action_id;
             if (player == position) {
-                Blueprint blue = blueprint[(int) Bias::Base][player][street][info_id][cluster];
+                Blueprint blue;
+                if (!at_preflop) {
+                    const Infoset& info = infoset[player][info_id][cluster];
+                    blue.init_from_infoset(info);
+
+                    for (int i = 0; i < info.num_actions; i++) 
+                        cout << info.cum_regret[i] << " " << info.cum_strat[i] << endl;
+                } else {
+                    blue = blueprint[(int) Bias::Base][player][street][info_id][cluster];
+                }
+
                 print_game_info(play, position);
                 print_my_actions(bet, play, blue);
                 str input = get_input(ACTION_VALUE, "Choose my action:", 1).back();
                 action_id = get_action_id(bet, ACTION_VALUE.at(input));
             } else {
+                if (!at_preflop) {
+                    const Infoset& info = infoset[player][info_id][cluster];
+                    for (int i = 0; i < info.num_actions; i++) 
+                        cout << info.cum_regret[i] << " " << info.cum_strat[i] << endl;
+                }
+
                 print_opp_actions(bet, play);
                 str input = get_input(ACTION_VALUE, "Choose opponent action:", 1).back();
                 action_id = get_action_id(bet, ACTION_VALUE.at(input));
             }
 
+            update_reach_prob(in_public, cards, bet_id, action_id);
             play = play.get_next_state(bet.children[action_id].action);
             bet_id = bet.children[action_id].bet_id;
             bet = betstate[bet_id];           
@@ -156,7 +191,6 @@ void play(int game) {
 
 int main() {
     init();
-
     for (int game = 0; ; game++) 
         play(game);
 }
