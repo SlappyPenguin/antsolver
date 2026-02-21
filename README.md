@@ -15,7 +15,8 @@ The g++ compiler and at least 32GB of RAM are needed.
 
 First, compile all programs using the top Makefile:
 
-```make
+```bash
+make
 
 Then, run these programs for the abstraction (takes ~12 hours):
 
