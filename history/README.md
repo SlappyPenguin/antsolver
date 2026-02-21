@@ -2,7 +2,7 @@
 
 This folder is not a part of the main solver. It's a personal record tracing the progress of state-of-the-art equilibrium finding, abstraction, and search algorithms for Poker (and imperfect-information games more generally). 
 
-I try to be comprehensive with the timeline of major breakthroughs, but the programs provided here only implement a few equilibrium finding algorithms - specifically the earlier variants of CFR (more coming soon...). 
+The programs provided here only implement a few equilibrium finding algorithms - specifically the earlier variants of CFR. 
 
 ## Timeline
 
