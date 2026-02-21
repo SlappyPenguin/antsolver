@@ -2,17 +2,17 @@
 This is a heads-up no-limit poker AI built from advanced game theory research. The goal for this project is to achieve elite human level performance in heads-up poker, while training entirely on the computing resources found on a laptop. It was inspired by research on imperfect-information games (see `history/`).
 
 ## Structure
-### 1. Generate abstraction
+### Generate abstraction
 - Card sets are abstracted into 169-1000-1000-1000 buckets on each street
 - On the flop and turn, distribution-aware clustering is used
 - On the river, percentile hand strength is used 
 - Action abstraction is done by restricting bets to simple percentages of the pot.
 
-### 2. Train blueprint strategy
+### Train blueprint strategy
 - In the abstracted game, a Nash equilibrium strategy is approximated
 - External-sampling MCCFR is used for convergence
 
-### 3. Real-time search
+### Real-time search
 - When playing with or against the AI, the current subgame is resolved
 - Depth-limited solving is used on every street except the preflop
 
