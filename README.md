@@ -62,6 +62,8 @@ cd build
 ```
 
 ## Performance
+In this first iteration of the solver, off-tree betting actions are not yet allowed. Within this simplified game, the bot seems to play around amateur human level.
+
 ...
 
 ## Planned Improvements
