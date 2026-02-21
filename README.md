@@ -1,7 +1,8 @@
 # Antsolver
 This is a heads-up no-limit poker AI built from advanced game theory research. The goal for this project is to achieve elite human level performance in heads-up poker, while training entirely on the computing resources found on a laptop. 
 
-The solver is assembled in 3 main stages:
+## Structure
+The solver is composed of 3 parts:
 
 ### 1. Generate abstraction
 - Card sets are abstracted into 169-1000-1000-1000 buckets on each street
@@ -10,10 +11,12 @@ The solver is assembled in 3 main stages:
 - Action abstraction is done by restricting bets to simple percentages of the pot.
 
 ### 2. Train blueprint strategy
-Within this abstracted game, external-sampling MCCFR is run to converge to a Nash equilibrium strategy.
+- In the abstracted game, a Nash equilibrium strategy is approximated
+- External-sampling MCCFR is used for convergence
 
 ### 3. Real-time search
-When playing with or against the AI, depth-limited solving is run on every street except the preflop to resolve the current subgame.
+- When playing with or against the AI, the current subgame is resolved
+- Depth-limited solving is used on every street except the preflop
 
 ## Installation
 The g++ compiler and at least 32GB of RAM are needed. 
@@ -47,6 +50,8 @@ cd build
 # Practically, these should both be run multiple times
 ./generator
 ./trainer
+# Reformats blueprint
+./reformat
 ```
 
 Finally, play with or against the AI:
