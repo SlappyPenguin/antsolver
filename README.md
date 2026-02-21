@@ -1,5 +1,5 @@
 # Antsolver
-This is a heads-up no-limit poker AI built from advanced game theory research. The goal for this project is to achieve elite human level performance in heads-up poker, while training entirely on the computing resources found on a laptop. It was inspired by research on imperfect-information games (see `history/`).
+This is a heads-up no-limit poker AI built from advanced game theory research. The goal for this project is to achieve elite human level performance in heads-up poker, while training entirely on the computing resources found on a laptop. It was inspired by frontier research on imperfect-information games (see `history/`).
 
 ## Structure
 ### Generate abstraction
