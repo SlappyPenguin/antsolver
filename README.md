@@ -19,7 +19,7 @@ First, compile all programs using the top Makefile:
 make
 ```
 
-Then, run these programs for the abstraction (takes ~12 hours):
+Run these programs for the abstraction (takes ~12 hours):
 
 ```bash
 cd build
@@ -35,11 +35,11 @@ cd build
 ./tree
 ```
 
-Then, run these programs to train the blueprint (takes a few days to converge):
+Run these programs to train the blueprint (takes a few days to converge):
 
 ```bash
 cd build
-# Practically, these should be repeatedly run multiple times
+# Practically, these should both be run multiple times
 ./generator
 ./trainer
 ```
@@ -53,6 +53,10 @@ cd build
 ./play_against_search
 ```
 
-## Authors
+## Planned Improvements
+Future planned improvements:
 
-Everything unless specified was written by me. The 7-card hand evaluator in src/evaluation was taken from the ingenious XPokerEval library (https://github.com/tangentforks/XPokerEval).
+- Merge game generation with training by branching chance actions in MCCFR
+- Implement regret-based pruning to speed up blueprint and search
+- Allow for off-tree actions using action translation or nested search
+- Write a full benchmark against Slumbot
