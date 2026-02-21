@@ -53,8 +53,11 @@ cd build
 ./play_against_search
 ```
 
+## Performance
+...
+
 ## Planned Improvements
-Future planned improvements:
+Improvements for the next iteration of the solver:
 
 - Merge game generation with training by branching chance actions in MCCFR
 - Implement regret-based pruning to speed up blueprint and search
