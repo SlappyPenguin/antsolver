@@ -21,10 +21,19 @@ make
 
 Then, run these programs for the abstraction (takes ~12 hours):
 
-
-
-
-
+```bash
+cd build
+# Precomputes table for hand evaluation
+./table
+# Card abstraction
+./sets
+./strengths
+./distributions
+./preflop_river_clusters
+./flop_turn_clusters
+# Bet abstraction
+./tree
+```
 
 
 
