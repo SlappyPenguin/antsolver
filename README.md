@@ -1,6 +1,6 @@
 # Antsolver
 
-This is a heads-up no-limit poker AI built from advanced game theory research. The goal for this project is to achieve elite human level performance in heads-up poker, while training entirely on the computing resources found on a laptop. While most frontier models require extreme amounts of memory and compute, I was inspired by solvers like Modicum and GTO Wizard, which are highly resource-efficient.
+This is a heads-up no-limit poker AI built from advanced game theory research. The goal for this project is to achieve elite human level performance in heads-up poker, while training entirely on the computing resources found on a laptop. 
 
 The solver is assembled in 3 distinct parts:
 
