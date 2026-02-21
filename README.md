@@ -1,5 +1,4 @@
 # Antsolver
-
 This is a heads-up no-limit poker AI built from advanced game theory research. The goal for this project is to achieve elite human level performance in heads-up poker, while training entirely on the computing resources found on a laptop. The solver is assembled in 3 distinct parts:
 
 #### 1. Generate abstraction
@@ -12,6 +11,18 @@ Within this abstracted game, external-sampling MCCFR is run to converge to a Nas
 When playing with or against the AI, depth-limited solving is run on every street except the preflop to resolve the current subgame.
 
 ## Installation
+The g++ compiler and at least 32GB of RAM are needed. 
+
+First, compile all programs using the top Makefile:
+
+`make`
+
+Then, run these programs for the abstraction (takes ~12 hours):
+
+
+
+
+
 
 
 
