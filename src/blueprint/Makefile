@@ -1,10 +1,4 @@
-all: tree generator trainer reformat play_with_blueprint
-
-tree: 
-	g++ tree.cpp \
-	-std=c++20 \
-	-Wall -O3 -march=native -flto -funroll-loops -pthread \
-	-o ../../build/tree
+all: generator trainer reformat play_with_blueprint
 
 generator:
 	g++ generator.cpp ../helper/convert.cpp ../evaluation/rank.cpp ../helper/init.cpp \
