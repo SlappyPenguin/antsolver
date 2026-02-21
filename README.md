@@ -17,6 +17,7 @@ First, compile all programs using the top Makefile:
 
 ```bash
 make
+```
 
 Then, run these programs for the abstraction (takes ~12 hours):
 
