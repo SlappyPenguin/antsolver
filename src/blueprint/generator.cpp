@@ -12,7 +12,7 @@ iteration use the same random card rollouts.
 #include "../../include/init.h"
 using namespace std;
 
-constexpr int NUM_GAMES = 100000;
+constexpr int NUM_GAMES = 20000000;
 constexpr int NUM_THREADS = 12;
 const str GAMESTATES_FILE = "../data/gamestates.bin";
 

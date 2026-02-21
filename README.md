@@ -35,7 +35,23 @@ cd build
 ./tree
 ```
 
+Then, run these programs to train the blueprint (takes a few days to converge):
 
+```bash
+cd build
+# Practically, these should be repeatedly run multiple times
+./generator
+./trainer
+```
+
+Finally, play with or against the AI:
+
+```bash
+cd build
+./play_with_blueprint
+./play_with_search
+./play_against_search
+```
 
 ## Authors
 
