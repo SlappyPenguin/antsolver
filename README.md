@@ -17,9 +17,23 @@ This is a heads-up no-limit poker AI built from advanced game theory research. T
 - Depth-limited solving is used on every street except the preflop
 
 ## Installation
-The g++ compiler and at least 32GB of RAM are needed. 
+First, clone the repository:
 
-First, compile all programs using the top Makefile:
+```bash
+git clone https://github.com/SlappyPenguin/Antsolver.git
+cd Antsolver
+```
+
+If you just want to access the visualiser, example spots have been provided, which can be visualised using Python:
+
+```bash
+cd scripts
+python visualiser.py
+# Small blind opening
+Input file name (__.txt): visualise_preflop
+```
+
+For full installation, the g++ compiler and at least 32GB of RAM are needed. First, compile all programs using the top Makefile:
 
 ```bash
 make

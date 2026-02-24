@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
@@ -6,7 +7,6 @@ from matplotlib.patches import Patch
 FIGURE_SIZE = 4.8
 NUM_RANKS = 13
 MATRIX_RATIO = 1 / 1.33
-FILE_NAME = "../data/visualise.txt"
 RANKS = ["A","K","Q","J","T","9","8","7","6","5","4","3","2"]
 ACTION_COLOR = {
     "Fold": "#1f77b4",
@@ -21,7 +21,15 @@ ACTION_COLOR = {
 }
 
 def read_file():
-    with open(FILE_NAME, "r") as file:
+    file_name = None
+    while True:
+        name = input("Input file name (__.txt): ")
+        file_name = "../data/" + name + ".txt"
+        if os.path.isfile(file_name):
+            break
+        print("File doesn't exist in data/, try again")
+
+    with open(file_name, "r") as file:
         num_actions = int(file.readline().strip())
         actions = file.readline().strip().split()
         strategies = []
