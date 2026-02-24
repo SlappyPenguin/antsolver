@@ -1,1 +1,1 @@
-This folder stores large data files (not tracked by Git).
+This folder stores data files (.bin files are not tracked by Git).
