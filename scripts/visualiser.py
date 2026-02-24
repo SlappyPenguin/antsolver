@@ -1,3 +1,5 @@
+# Align rectangles with top not bottom
+
 import os
 import numpy as np
 import matplotlib.pyplot as plt
@@ -32,14 +34,15 @@ def read_file():
     with open(file_name, "r") as file:
         num_actions = int(file.readline().strip())
         actions = file.readline().strip().split()
-        strategies = []
+        strategies, fills = [], []
         for line in file:
             line = line.strip()
             if not line:
                 continue
             row = list(map(float, line.split()))
-            strategies.append(row)
-    return num_actions, actions, strategies
+            fills.append(row[0])
+            strategies.append(row[1:])
+    return num_actions, actions, fills, strategies
 
 def get_order():
     order = []
@@ -50,13 +53,14 @@ def get_order():
             order.append((j, i))   
     return order
 
-def get_matrix(strategies, num_actions):
+def get_matrix(fills, strategies, num_actions):
     order = get_order()
-    matrix = np.zeros((NUM_RANKS, NUM_RANKS, num_actions))
+    matrix = np.zeros((NUM_RANKS, NUM_RANKS, num_actions + 1))
     
     for i, strat in enumerate(strategies):
         row, col = order[i]
-        matrix[row, col, :] = strat
+        matrix[row, col, 0] = fills[i]
+        matrix[row, col, 1:] = strat
     return matrix
 
 def plot_matrix(matrix, actions, num_actions):
@@ -64,12 +68,13 @@ def plot_matrix(matrix, actions, num_actions):
     
     for i in range(NUM_RANKS):
         for j in range(NUM_RANKS):
-            probs = matrix[i, j, :]
+            fill = matrix[i, j, 0]
+            probs = matrix[i, j, 1:]
             left = 0
             # Reversed since it otherwise it fills right to left
             for k in range(num_actions - 1, -1, -1):
                 prob = probs[k]
-                rect = Rectangle((i + left, j), prob, 1, facecolor=ACTION_COLOR[actions[k]], edgecolor="black")
+                rect = Rectangle((i + left, j), prob, fill, facecolor=ACTION_COLOR[actions[k]], edgecolor="black")
                 axes.add_patch(rect)
                 left += prob
 
@@ -94,6 +99,8 @@ def plot_matrix(matrix, actions, num_actions):
                 fontname = "Arial"
             )
     
+    figure.patch.set_facecolor("white")
+    axes.patch.set_facecolor("#333333")
     axes.set_aspect(MATRIX_RATIO)
     axes.set_xlim(0, NUM_RANKS)
     axes.set_ylim(0, NUM_RANKS)
@@ -109,6 +116,6 @@ def plot_matrix(matrix, actions, num_actions):
     plt.show()
 
 if __name__ == "__main__":
-    num_actions, actions, strategies = read_file()
-    matrix = get_matrix(strategies, num_actions)
+    num_actions, actions, fills, strategies = read_file()
+    matrix = get_matrix(fills, strategies, num_actions)
     plot_matrix(matrix, actions, num_actions)

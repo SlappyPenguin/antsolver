@@ -63,6 +63,9 @@ void update_reach_prob(
     }
     normalise_reach_prob();
 }
+float get_reach_prob(arr<int, NUM_HOLE_CARDS> hole_cards, int player) {
+    return reach_prob[player][hole_cards[0]][hole_cards[1]];
+}
 
 static arr<arr<arr<arr<doub, NUM_CARDS>, NUM_CARDS>, NUM_CARDS>, NUM_CARDS> combined_prob;
 static void normalise_combined_prob() {

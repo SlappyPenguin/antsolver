@@ -17,6 +17,7 @@ void update_reach_prob(
     arr<int, NUM_FINAL_CARDS> cards, 
     int bet_id, int action
 );
+float get_reach_prob(arr<int, NUM_HOLE_CARDS> hole_cards, int player);
 void search(
     const arr<int, NUM_FINAL_CARDS>& cards, 
     const arr<bool, NUM_CARDS>& in_public, 

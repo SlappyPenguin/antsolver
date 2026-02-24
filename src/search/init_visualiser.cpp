@@ -1,5 +1,7 @@
 /*
-Generates data to visualise the solution at any given betstate.
+Generates data to visualise the solution at any given betstate. The amount each cell is filled is the probability
+that a player who was dealt those cards reached that betstate, but normalised so that the most probable cell is 
+fully filled.
 */
 
 #include <bits/stdc++.h>
@@ -111,18 +113,19 @@ void print_visualise(const arr<bool, NUM_CARDS>& in_public, arr<int, NUM_FINAL_C
     int num_actions = bet.children.size();
     int num_clusters = NUM_CLUSTERS[(int) Street::Preflop];    
 
-    struct Policy{
-        int count = 0;
-        arr<float, MAX_NUM_ACTIONS> strat = {};
-    };
-    vec<Policy> policy(num_clusters);
-
     ofstream file(VISUALISE_FILE);
     file << num_actions << endl;
     for (Betstate::Child child : bet.children)
         file << ACTION_NAME.at(child.action) << " ";
     file << endl;
     
+    struct Policy{
+        int count = 0;
+        float reach_prob = 0;
+        arr<float, MAX_NUM_ACTIONS> strat = {};
+    };
+    vec<Policy> policy(num_clusters);
+
     auto get_cluster = [](arr<int, NUM_FINAL_CARDS> cards, int street) {
         cards = convert(cards, street);
         lint id = get_id(cards, street);
@@ -142,15 +145,23 @@ void print_visualise(const arr<bool, NUM_CARDS>& in_public, arr<int, NUM_FINAL_C
 
             int preflop_cluster = get_cluster(cards, (int) Street::Preflop);
             policy[preflop_cluster].count++;
+            policy[preflop_cluster].reach_prob += get_reach_prob({i, j}, player);
             for (int k = 0; k < num_actions; k++)
                 policy[preflop_cluster].strat[k] += blue.strat[k];
         }
     }
 
+    float max_reach_prob = 0;
     for (int i = 0; i < num_clusters; i++) {
+        policy[i].reach_prob /= max(policy[i].count, 1);
+        max_reach_prob = max(max_reach_prob, policy[i].reach_prob);
+    }
+
+    for (int i = 0; i < num_clusters; i++) {
+        float relative_prob = policy[i].reach_prob / max_reach_prob;
+        file << relative_prob << " ";
         for (int j = 0; j < num_actions; j++) {
-            if (policy[i].count > 0)
-                policy[i].strat[j] /= policy[i].count;
+            policy[i].strat[j] /= max(policy[i].count, 1);
             file << policy[i].strat[j] << " ";
         }
         file << endl;
