@@ -75,6 +75,12 @@ cd build
 ./play_against_search
 ```
 
+To create custom spots to visualise:
+```bash
+cd build
+./init_visualiser
+```
+
 ## Performance
 In this first iteration of the solver, off-tree betting actions are not yet allowed. Within this simplified game, the bot seems to play around amateur human level.
 
