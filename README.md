@@ -24,13 +24,12 @@ git clone https://github.com/SlappyPenguin/Antsolver.git
 cd Antsolver
 ```
 
-If you just want to access the visualiser, example spots have been provided in `data/`. These can be visualised using Python:
+If you just want to access the visualiser, example spots have been provided in `data/`. For more details, see `data/REAME.md`. These can be visualised using Python:
 
 ```bash
 cd scripts
 python visualiser.py
-# Small blind opening
-> Input file name (__.txt): visualise_preflop
+> Input file name (__.txt): visualise_preflop1
 ```
 
 For full installation, the g++ compiler and at least 32GB of RAM are needed. First, compile all programs using the top Makefile:
