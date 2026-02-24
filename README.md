@@ -24,7 +24,7 @@ git clone https://github.com/SlappyPenguin/Antsolver.git
 cd Antsolver
 ```
 
-If you just want to access the visualiser, example spots have been provided, which can be visualised using Python:
+If you just want to access the visualiser, example spots have been provided in `data/`. These can be visualised using Python:
 
 ```bash
 cd scripts
@@ -80,8 +80,8 @@ In this first iteration of the solver, off-tree betting actions are not yet allo
 
 ...
 
-## Planned Improvements
-Improvements for the next iteration of the solver:
+## Planned Upgrades
+Upgrades for the next iteration of the solver:
 
 - Merge game generation with training by branching chance actions in MCCFR
 - Implement regret-based pruning to speed up blueprint and search
