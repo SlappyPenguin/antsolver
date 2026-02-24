@@ -23,11 +23,11 @@ ACTION_COLOR = {
 def read_file():
     file_name = None
     while True:
-        name = input("Input file name (__.txt): ")
+        name = input("> Input file name (__.txt): ")
         file_name = "../data/" + name + ".txt"
         if os.path.isfile(file_name):
             break
-        print("File doesn't exist in data/, try again")
+        print("> File doesn't exist in data/, try again")
 
     with open(file_name, "r") as file:
         num_actions = int(file.readline().strip())

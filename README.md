@@ -30,7 +30,7 @@ If you just want to access the visualiser, example spots have been provided, whi
 cd scripts
 python visualiser.py
 # Small blind opening
-Input file name (__.txt): visualise_preflop
+> Input file name (__.txt): visualise_preflop
 ```
 
 For full installation, the g++ compiler and at least 32GB of RAM are needed. First, compile all programs using the top Makefile:
@@ -59,7 +59,7 @@ Run these programs to train the blueprint (takes a few days to converge):
 
 ```bash
 cd build
-# Practically, these should both be run multiple times
+# Practically, the next two should be run multiple times
 ./generator
 ./trainer
 # Reformats blueprint
