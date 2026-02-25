@@ -24,7 +24,7 @@ git clone https://github.com/SlappyPenguin/Antsolver.git
 cd Antsolver
 ```
 
-If you just want to access the visualiser, example spots have been provided in `data/`. For more details, see `data/REAME.md`. These can be visualised using Python:
+If you just want to access the visualiser, example spots have been provided in `data/`. For more details, see `data/README.md`. These can be visualised using Python:
 
 ```bash
 cd scripts
