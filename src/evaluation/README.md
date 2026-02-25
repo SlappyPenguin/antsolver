@@ -1,0 +1,1 @@
+Credit to https://github.com/tangentforks/XPokerEval for this fast hand evaluator
