@@ -83,7 +83,10 @@ cd build
 ## Performance
 In this first iteration of the solver, off-tree betting actions are not yet allowed. Within this simplified game, the bot plays at an advanced amateur level.
 
-<img src="images/antsolver_preflop1.png" width="800">
+<p align="center">
+  <img src="images/example.png" width="700"><br>
+  <em>Antsolver solution for SB opening</em>
+</p>
 
 ...
 
