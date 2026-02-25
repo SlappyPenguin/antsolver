@@ -1,6 +1,6 @@
 ### Example spots
 
-These are example files you can use with the visualiser:
+Use the visualiser to view the solver's strategy at these spots:
 
 | Spot | Description |
 |------|-------------|
