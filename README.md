@@ -65,7 +65,7 @@ cd build
 ./tree
 ```
 
-To train the blueprint strategy (takes ~3 days to converge):
+To train the blueprint strategy (takes ~5 days to converge):
 
 ```bash
 cd build
