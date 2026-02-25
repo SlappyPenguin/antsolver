@@ -9,7 +9,7 @@ from matplotlib.patches import Patch
 FIGURE_SIZE = 4.8
 NUM_RANKS = 13
 MATRIX_RATIO = 1 / 1.33
-RANKS = ["A","K","Q","J","T","9","8","7","6","5","4","3","2"]
+RANKS = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"]
 ACTION_COLOR = {
     "Fold": "#1f77b4",
     "Check-Call": "#2ca02c",
@@ -44,54 +44,55 @@ def read_file():
             strategies.append(row[1:])
     return num_actions, actions, fills, strategies
 
+# (row, col) coordinate + hand
 def get_order():
     order = []
-    for i in range(NUM_RANKS - 1, -1, -1):
-        for j in range(i, -1, -1):
-            if i != j:
-                order.append((i, j))
-            order.append((j, i))   
+    for rank1 in range(NUM_RANKS):
+        for rank2 in range(rank1, NUM_RANKS):
+            larger = NUM_RANKS - 1 - rank1
+            smaller = NUM_RANKS - 1 - rank2
+            if rank1 == rank2:
+                order.append((smaller, larger, f"{RANKS[rank2]}{RANKS[rank1]}"))
+            else:
+                order.append((smaller, larger, f"{RANKS[rank2]}{RANKS[rank1]}s"))
+                order.append((larger, smaller, f"{RANKS[rank2]}{RANKS[rank1]}o"))
     return order
 
+# converts to (x, y) coordinate + hand + fills + strat
 def get_matrix(fills, strategies, num_actions):
     order = get_order()
-    matrix = np.zeros((NUM_RANKS, NUM_RANKS, num_actions + 1))
+    matrix = np.zeros((NUM_RANKS, NUM_RANKS, num_actions + 2), dtype=object)
     
     for i, strat in enumerate(strategies):
-        row, col = order[i]
-        matrix[row, col, 0] = fills[i]
-        matrix[row, col, 1:] = strat
+        row, col, hand = order[i]
+        y = NUM_RANKS - 1 - row
+        x = col
+        matrix[x, y, 0] = hand 
+        matrix[x, y, 1] = fills[i]
+        matrix[x, y, 2:] = strat 
     return matrix
 
 def plot_matrix(matrix, actions, num_actions):
     figure, axes = plt.subplots(figsize=(FIGURE_SIZE, FIGURE_SIZE))
     
-    for i in range(NUM_RANKS):
-        for j in range(NUM_RANKS):
-            fill = matrix[i, j, 0]
-            probs = matrix[i, j, 1:]
-            left = 0
-            # Reversed since it otherwise it fills right to left
-            for k in range(num_actions - 1, -1, -1):
-                prob = probs[k]
-                rect = Rectangle((i + left, j), prob, fill, facecolor=ACTION_COLOR[actions[k]], edgecolor="black")
-                axes.add_patch(rect)
-                left += prob
+    for x in range(NUM_RANKS):
+        for y in range(NUM_RANKS):
+            hand = matrix[x, y, 0]
+            fill = matrix[x, y, 1]
+            strat = matrix[x, y, 2:]
 
-            rank1 = RANKS[i]
-            rank2 = RANKS[j]
-            text = ""
-            if i == j:
-                text = f"{rank1}{rank2}"
-            elif (i < j):
-                text = f"{rank1}{rank2}o"
-            else:
-                text = f"{rank2}{rank1}s"
+            shift = 0
+            # Reversed because more convenient to fill left to right
+            for k in range(num_actions - 1, -1, -1):
+                prob = strat[k]
+                rect = Rectangle((x + shift, y), prob, fill, facecolor=ACTION_COLOR[actions[k]], edgecolor="black")
+                axes.add_patch(rect)
+                shift += prob
 
             axes.text(
-                i + 0.05,
-                j + 0.05,
-                text,
+                x + 0.05,
+                y + 0.05,
+                hand,
                 ha = "left",
                 va = "top",
                 fontsize = 13.5,
@@ -107,7 +108,6 @@ def plot_matrix(matrix, actions, num_actions):
     axes.set_xticks([])
     axes.set_yticks([])
     axes.set_title("Antsolver Strategy", fontweight = "bold", fontname = "Arial", fontsize = 16)
-    plt.gca().invert_yaxis()
     
     legend = [Patch(facecolor=ACTION_COLOR[i], label=i) for i in actions]
     axes.legend(handles=legend, bbox_to_anchor=(1.05, 1), loc="upper left", prop={"family": "Arial"})
