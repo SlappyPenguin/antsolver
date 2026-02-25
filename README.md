@@ -94,7 +94,7 @@ Compare this to the strategies of Supremus, a frontier research AI based on neur
 | | |
 |:-:|:-:|
 | <img src="images/supremus_preflop1.png" width="400"> | <img src="images/wizard_preflop1.png" width="500"> |
-| *Supremus' strategy (restricted to probabilities of not folding)* | *GTO Wizard's strategy* |
+| *Supremus' strategy (restricted to probability of not folding)* | *GTO Wizard's strategy* |
 
 While Antsolver uses the blueprint as its strategy in the preflop, later subgames are resolved in real-time. Consider its policy as SB after limping preflop, and BB checking over a flop of K♠J♠9♣:
 
