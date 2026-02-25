@@ -100,7 +100,7 @@ While Antsolver uses the blueprint as its strategy in the preflop, later subgame
 
 | | |
 |:-:|:-:|
-| <img src="images/antsolver_flop1.png" width="400"> | <img src="images/wizard_flop1.png" width="450"> |
+| <img src="images/antsolver_flop1.png" width="450"> | <img src="images/wizard_flop1.png" width="500"> |
 | *Antsolver's strategy* | *GTO Wizard's strategy* |
 
 ## Planned Upgrades
