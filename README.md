@@ -81,7 +81,7 @@ cd build
 ```
 
 ## Performance
-The full solver will play in the standardised version of HUNL for the Annual Computer Poker Competition - $20,000 stacks with $50/$100 blinds. In this first iteration of the solver, off-tree betting actions are not yet allowed. Within this simplified game, the bot plays at around an advanced amateur level. 
+The full solver will play in the standardised version of HUNL for the Annual Computer Poker Competition: $20,000 stacks with $50/$100 blinds. In this first iteration of the solver, off-tree betting actions are not yet allowed. Within this simplified game, the bot plays at around an advanced amateur level. 
 
 Consider its policy as SB opening preflop:
 
