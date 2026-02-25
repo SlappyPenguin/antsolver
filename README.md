@@ -88,6 +88,22 @@ In this first iteration of the solver, off-tree betting actions are not yet allo
   <em>Antsolver solution for SB opening</em>
 </p>
 
+Compare this to the strategies of Supremus, a frontier research AI based on neural nets, and GTO Wizard, a state-of-the-art commercial solver.
+
+<div style="display: flex; justify-content: center; gap: 20px;">
+
+  <figure style="text-align: center;">
+    <img src="images/supremus_preflop1.png" width="350">
+    <figcaption>Figure 1: First output.</figcaption>
+  </figure>
+
+  <figure style="text-align: center;">
+    <img src="images/wizard_preflop1.png" width="350">
+    <figcaption>Figure 2: Second output.</figcaption>
+  </figure>
+
+</div>
+
 ...
 
 ## Planned Upgrades
