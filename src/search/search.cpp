@@ -7,9 +7,9 @@
 #include "../../include/retrainer.h"
 using namespace std;
 
-constexpr int NUM_ROLLOUTS = 3;
+constexpr int NUM_ROLLOUTS = 6;
 constexpr int NUM_THREADS = 12;
-constexpr arr<int, NUM_STREETS> NUM_GAMES = {0, 20000000, 30000000, 80000000};
+constexpr arr<int, NUM_STREETS> NUM_GAMES = {0, 40000000, 60000000, 100000000};
 constexpr int MAX_NUM_GAMES = []{
     return *max_element(NUM_GAMES.begin(), NUM_GAMES.end());
 }();
