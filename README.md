@@ -81,7 +81,11 @@ cd build
 ```
 
 ## Performance
-In this first iteration of the solver, off-tree betting actions are not yet allowed. Within this simplified game, the bot seems to play around amateur human level.
+In this first iteration of the solver, off-tree betting actions are not yet allowed. Within this simplified game, the bot plays at an advanced amateur level.
+
+![Alt-text](images/antsolver_preflop1.png)
+
+*Figure 1: Antsolver solution for SB opening*
 
 ...
 
