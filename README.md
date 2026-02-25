@@ -81,7 +81,9 @@ cd build
 ```
 
 ## Performance
-The full solver will play in the standardised version of HUNL for the Annual Computer Poker Competition - $20,000 stacks with $50/$100 blinds. In this first iteration of the solver, off-tree betting actions are not yet allowed. Within this simplified game, the bot plays at around an advanced amateur level. Consider its policy as SB opening:
+The full solver will play in the standardised version of HUNL for the Annual Computer Poker Competition - $20,000 stacks with $50/$100 blinds. In this first iteration of the solver, off-tree betting actions are not yet allowed. Within this simplified game, the bot plays at around an advanced amateur level. 
+
+Consider its policy as SB opening:
 
 <p align="center">
   <img src="images/antsolver_preflop1.png" width="700"><br>
@@ -92,7 +94,7 @@ Compare this to the strategies of Supremus, a frontier research AI based on neur
 | | |
 |:-:|:-:|
 | <img src="images/supremus_preflop1.png" width="300"> | <img src="images/wizard_preflop1.png" width="500"> |
-| *Figure 1: First output.* | *Figure 2: Second output.* |
+| *Supremus' strategy - probability of calling* | *GTO Wizard's strategy* |
 
 ...
 
