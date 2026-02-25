@@ -91,7 +91,7 @@ def plot_matrix(matrix, actions, num_actions):
 
             axes.text(
                 x + 0.05,
-                y + 0.05,
+                y + 0.90,
                 hand,
                 ha = "left",
                 va = "top",
