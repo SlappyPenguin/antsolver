@@ -94,7 +94,7 @@ Compare this to the strategies of Supremus, a frontier research AI based on neur
 | | |
 |:-:|:-:|
 | <img src="images/supremus_preflop1.png" width="300"> | <img src="images/wizard_preflop1.png" width="500"> |
-| *Supremus' strategy - probability of calling* | *GTO Wizard's strategy* |
+| *Supremus' strategy (restricted to probabilities of not folding)* | *GTO Wizard's strategy* |
 
 ...
 
