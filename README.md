@@ -1,10 +1,10 @@
 # Antsolver
 A heads-up no-limit (HUNL) poker AI built from contemporary research on imperfect-information games. The goal for this project is to achieve elite human-level performance in HUNL, while training entirely on the computing resources found on a laptop. 
 
-This project is inspired by frontier research on large-scale imperfect-information games (see `history/`).
+This project is inspired by frontier research in game theory (see `history/`).
 
 ## Structure
-The solver follows the abstraction + blueprint + search paradigm used by top models.
+The solver follows the abstraction + blueprint + search paradigm used by research models.
 
 ### Generate abstraction
 - Hand information is abstracted into 169-1000-1000-1000 buckets across streets

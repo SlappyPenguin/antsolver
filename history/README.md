@@ -1,7 +1,7 @@
 ## History
 
 This folder is separate from the main solver. It's a personal record tracing the progress of state-of-the-art 
-algorithms for equilibrium finding, abstraction, and search in poker and large, imperfect-information games more generally. 
+algorithms for equilibrium finding, abstraction, and search in poker and large-scale, imperfect-information games more generally. 
 
 The programs provided here only implement a few equilibrium finding algorithms, specifically the earlier variants of counterfactual regret minimisation (CFR). 
 
