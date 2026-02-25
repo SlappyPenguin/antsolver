@@ -14,7 +14,7 @@ The solver follows the abstraction + blueprint + search paradigm used by top mod
 
 ### Train blueprint strategy
 - Nash equilibrium is approximated within abstracted game
-- External-sampling MCCFR is used for convergence
+- External-sampling Monte Carlo counterfactual regret minimisation (MCCFR) is used for convergence
 
 ### Resolve in real-time
 - Subgames are resolved on every street except the preflop
