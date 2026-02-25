@@ -1,10 +1,10 @@
-# History
+## History
 
 This folder is not a part of the main solver. It's a personal record tracing the progress of state-of-the-art equilibrium finding, abstraction, and search algorithms for Poker (and imperfect-information games more generally). 
 
 The programs provided here only implement a few equilibrium finding algorithms - specifically the earlier variants of CFR. 
 
-## Timeline
+### Timeline
 
 | Year | Breakthrough | Paper | Description |
 |------|-------------|-------|-------------|
