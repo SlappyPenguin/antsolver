@@ -4,19 +4,21 @@ A heads-up no-limit (HUNL) poker AI built from contemporary research on imperfec
 This project is inspired by frontier research on large-scale imperfect-information games (see `history/`).
 
 ## Structure
+The solver follows the abstraction + blueprint + search paradigm used by top models.
+
 ### Generate abstraction
-- Card sets are abstracted into 169-1000-1000-1000 buckets on each street
-- On the flop and turn, distribution-aware clustering is used
-- On the river, percentile hand strength is used 
-- Action abstraction is done by restricting bets to simple percentages of the pot.
+- Hand information is abstracted into 169-1000-1000-1000 buckets across streets
+- Flop and turn use distribution-aware clustering
+- River uses percentile hand strength clustering
+- Action abstraction restricts bets to simple percentages of pot 
 
 ### Train blueprint strategy
-- In the abstracted game, a Nash equilibrium strategy is approximated
+- Nash equilibrium is approximated within abstracted game
 - External-sampling MCCFR is used for convergence
 
-### Real-time search
-- When playing with or against the AI, the current subgame is resolved
-- Depth-limited solving is used on every street except the preflop
+### Resolve in real-time
+- Subgames are resolved on every street except the preflop
+- Depth-limited search solves until the end of each streets using MCCFR
 
 ## Installation
 ### Quick Start
