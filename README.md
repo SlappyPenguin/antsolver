@@ -1,5 +1,7 @@
 # Antsolver
-This is a heads-up no-limit poker AI built from advanced game theory research. The goal for this project is to achieve elite human level performance in heads-up poker, while training entirely on the computing resources found on a laptop. It was inspired by frontier research on imperfect-information games (see `history/`).
+A heads-up no-limit (HUNL) poker AI built from contemporary research on imperfect-information games. The goal for this project is to achieve elite human-level performance in HUNL, while training entirely on the computing resources found on a laptop. 
+
+This project is inspired by frontier research on large-scale imperfect-information games (see `history/`).
 
 ## Structure
 ### Generate abstraction
@@ -126,4 +128,4 @@ Planned upgrades for the second iteration of the solver:
 - Merge gamestate generation with training by branching chance actions in MCCFR
 - Implement regret-based pruning to speed up blueprint computation and search
 - Respond to off-tree actions using action translation or nested depth-limited search
-- Test a full benchmark against Slumbot
+- Write a full benchmark against Slumbot
