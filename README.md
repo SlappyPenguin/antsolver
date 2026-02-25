@@ -17,6 +17,8 @@ This is a heads-up no-limit poker AI built from advanced game theory research. T
 - Depth-limited solving is used on every street except the preflop
 
 ## Installation
+### Quick Start
+
 First, clone the repository:
 
 ```bash
@@ -24,21 +26,30 @@ git clone https://github.com/SlappyPenguin/Antsolver.git
 cd Antsolver
 ```
 
-If you just want to access the visualiser, example spots have been provided in `data/`. For more details, see `data/README.md`. These can be visualised using Python:
+In order to visualise the solver's solutions, example in-game spots have been provided in `data/` (for more details, see `data/README.md`). Use Python to view the solver's strategy at each spot:    
 
 ```bash
 cd scripts
 python visualiser.py
+# Example spot
 > Input file name (__.txt): visualise_preflop1
 ```
 
-For full installation, the g++ compiler and at least 32GB of RAM are needed. First, compile all programs using the top Makefile:
+### Training pipeline
+Requirements for full installation and training:
+
+- g++ with C++20
+- make
+- At least 32GB RAM
+- At least 75GB free disk space
+
+First, compile all programs using the top Makefile:
 
 ```bash
 make
 ```
 
-Run these programs for the abstraction (takes ~12 hours):
+To generate the abstraction (takes ~12 hours):
 
 ```bash
 cd build
@@ -54,11 +65,11 @@ cd build
 ./tree
 ```
 
-Run these programs to train the blueprint (takes a few days to converge):
+To train the blueprint strategy (takes ~3 days to converge):
 
 ```bash
 cd build
-# Practically, the next two should be run multiple times
+# The next two should be run multiple times
 ./generator
 ./trainer
 # Reformats blueprint
@@ -109,10 +120,10 @@ While Antsolver uses the precomputed blueprint strategy in the preflop, later su
 | <img src="images/antsolver_flop1.png" width="450"> | <img src="images/wizard_flop1.png" width="500"> |
 | *Antsolver strategy* | *GTO Wizard strategy (72BB stacks)* |
 
-## Planned Upgrades
-Upgrades for the next iteration of the solver:
+## Roadmap
+Planned upgrades for the second iteration of the solver:
 
-- Merge game generation with training by branching chance actions in MCCFR
-- Implement regret-based pruning to speed up blueprint and search
-- Allow for off-tree actions using action translation or nested search
-- Write a full benchmark against Slumbot
+- Merge gamestate generation with training by branching chance actions in MCCFR
+- Implement regret-based pruning to speed up blueprint computation and search
+- Respond to off-tree actions using action translation or nested depth-limited search
+- Test a full benchmark against Slumbot
