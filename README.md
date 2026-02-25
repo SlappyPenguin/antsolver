@@ -92,7 +92,7 @@ Compare this to the strategies of Supremus, a frontier research AI based on neur
 
 | | |
 |:-:|:-:|
-| <img src="images/supremus_preflop1.png" width="350"> | <img src="images/wizard_preflop1.png" width="350"> |
+| <img src="images/supremus_preflop1.png" width="300"> | <img src="images/wizard_preflop1.png" width="500"> |
 | *Figure 1: First output.* | *Figure 2: Second output.* |
 
 ...
