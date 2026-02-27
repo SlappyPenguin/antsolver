@@ -6,17 +6,17 @@ This project is inspired by frontier research in game theory (see `history/`).
 ## Structure
 The solver follows the abstraction + blueprint + search paradigm used by research models.
 
-### Generate abstraction
+### (1) Generate abstraction
 - Hand information is abstracted into 169-1000-1000-1000 buckets across streets
 - Flop and turn use distribution-aware clustering
 - River uses percentile hand strength clustering
 - Action abstraction restricts bets to simple percentages of pot 
 
-### Train blueprint strategy
+### (2) Train blueprint strategy
 - Nash equilibrium is approximated within abstracted game
 - External-sampling Monte Carlo counterfactual regret minimisation (MCCFR) is used for convergence
 
-### Resolve in real-time
+### (3) Resolve in real-time
 - Subgames are resolved on every street except the preflop
 - Depth-limited search solves until the end of each streets using MCCFR
 
