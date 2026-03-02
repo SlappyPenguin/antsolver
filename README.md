@@ -53,7 +53,7 @@ First, compile all programs using the top Makefile:
 make
 ```
 
-To generate the abstraction (takes ~12 hours):
+To generate the abstraction (takes ~60 core hours):
 
 ```bash
 cd build
@@ -69,7 +69,7 @@ cd build
 ./tree
 ```
 
-To train the blueprint strategy (takes ~5 days to converge):
+To train the blueprint strategy (takes ~400 core hours to converge):
 
 ```bash
 cd build
