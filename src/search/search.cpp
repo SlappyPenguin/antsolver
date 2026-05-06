@@ -1,4 +1,6 @@
-#include <bits/stdc++.h>
+#include <chrono>
+#include <iostream>
+#include <thread>
 #include "../../include/solver.h"
 #include "../../include/search.h"
 #include "../../include/rank.h"

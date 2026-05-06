@@ -4,7 +4,9 @@ that a player who was dealt those cards reached that betstate, but normalised so
 fully filled.
 */
 
-#include <bits/stdc++.h>
+#include <cctype>
+#include <iostream>
+#include <numeric>
 #include "../../include/solver.h"
 #include "../../include/init.h"
 #include "../../include/convert.h"

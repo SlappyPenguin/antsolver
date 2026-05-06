@@ -2,7 +2,7 @@
 Converts any pairing of hole and board cards, on any street, into a valid card set (as outlined in sets.cpp).
 */
 
-#include <bits/stdc++.h>
+#include <numeric>
 #include "../../include/solver.h"
 #include "../../include/convert.h"
 using namespace std;

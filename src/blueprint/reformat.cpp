@@ -3,7 +3,9 @@ Reformats the layout of infosets.bin (which includes cumulative regret and strat
 strategy.
 */
 
-#include <bits/stdc++.h>
+#include <chrono>
+#include <iomanip>
+#include <iostream>
 #include "../../include/solver.h"
 #include "../../include/init.h"
 using namespace std;

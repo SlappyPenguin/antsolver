@@ -6,7 +6,15 @@ significantly reduces the time for each traversal.
 Solution verified from https://webdocs.cs.ualberta.ca/~holte/Publications/aaai2005poker.pdf.
 */
 
-#include <bits/stdc++.h>
+#include <algorithm>
+#include <chrono>
+#include <iomanip>
+#include <iostream>
+#include <map>
+#include <random>
+#include <string>
+#include <utility>
+#include <vector>
 using namespace std;
 #define str string 
 #define doub double 

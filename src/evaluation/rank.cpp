@@ -4,7 +4,8 @@ Quickly fetches the rank of any 7-card poker hand. In total, there are 7462 equi
 higher the rank is the better.
 */
 
-#include <bits/stdc++.h>
+#include <cstdio>
+#include <cstring>
 #include "../../include/solver.h"
 #include "../../include/rank.h"
 using namespace std;

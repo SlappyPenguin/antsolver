@@ -4,7 +4,12 @@ Nash equilibrium for Rock Paper Scissors. Regret matching picks actions with pro
 nonnegative cumulative regret.
 */
 
-#include <bits/stdc++.h>
+#include <algorithm>
+#include <array>
+#include <chrono>
+#include <iomanip>
+#include <iostream>
+#include <random>
 using namespace std;
 #define arr array 
 #define doub double 

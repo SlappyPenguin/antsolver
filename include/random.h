@@ -5,7 +5,8 @@ could be improved by using a more complex generator, but this is enough and very
 
 #pragma once
 
-#include <bits/stdc++.h>
+#include <cstdint>
+#include <random>
 using namespace std;
 
 struct Generator {

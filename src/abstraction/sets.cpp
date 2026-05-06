@@ -23,7 +23,9 @@ the turn, and 2,428,287,420 at the river.
 Solution verified from https://noambrown.github.io/papers/19-Science-Superhuman_Supp.pdf.
 */
 
-#include <bits/stdc++.h>
+#include <chrono>
+#include <iomanip>
+#include <iostream>
 #include "../../include/solver.h"
 using namespace std;
 

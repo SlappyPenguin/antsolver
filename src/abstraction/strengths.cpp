@@ -3,7 +3,9 @@ Generates the hand strength of every river card set. The hand strength of a set 
 uniformly random distribution of opponent hands, where a win is +1, a draw 0.5, and a loss 0.
 */
 
-#include <bits/stdc++.h>
+#include <chrono>
+#include <iomanip>
+#include <iostream>
 #include "../../include/solver.h"
 #include "../../include/rank.h"
 using namespace std;

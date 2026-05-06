@@ -7,7 +7,9 @@ is used to initialise the cluster centres. To speed up convergence, Hamerly's k-
 https://www.ccs.neu.edu/home/radivojac/classes/2024fallcs6140/hamerly_sdm_2010.pdf. 
 */
 
-#include <bits/stdc++.h>
+#include <chrono>
+#include <iomanip>
+#include <iostream>
 #include "../../include/random.h"
 #include "../../include/solver.h"
 using namespace std;

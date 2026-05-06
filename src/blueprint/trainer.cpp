@@ -5,7 +5,10 @@ NOTE: This code is not thread-safe, i.e. race conditions can happen. From testin
 no noticable effect on correctness.
 */
 
-#include <bits/stdc++.h>
+#include <chrono>
+#include <iomanip>
+#include <iostream>
+#include <thread>
 #include "../../include/solver.h"
 #include "../../include/init.h"
 using namespace std;

@@ -4,7 +4,11 @@ training (i.e. every time it gets to a new street, generate a card during traini
 iteration use the same random card rollouts.
 */
 
-#include <bits/stdc++.h>
+#include <chrono>
+#include <iomanip>
+#include <iostream>
+#include <numeric>
+#include <thread>
 #include "../../include/random.h"
 #include "../../include/solver.h"
 #include "../../include/rank.h"

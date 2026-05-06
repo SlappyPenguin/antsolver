@@ -6,7 +6,14 @@ below 0, and 2) weights the strategy sum linearly, favouring later iterations.
 Solution verified from https://webdocs.cs.ualberta.ca/~holte/Publications/aaai2005poker.pdf.
 */
 
-#include <bits/stdc++.h>
+#include <algorithm>
+#include <chrono>
+#include <iomanip>
+#include <iostream>
+#include <map>
+#include <string>
+#include <utility>
+#include <vector>
 using namespace std;
 #define str string 
 #define doub double 

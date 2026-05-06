@@ -1,6 +1,14 @@
 #pragma once
 
-#include <bits/stdc++.h>
+#include <algorithm>
+#include <array>
+#include <cassert>
+#include <cmath>
+#include <fstream>
+#include <map>
+#include <string>
+#include <utility>
+#include <vector>
 #include "random.h"
 using namespace std;
 using lint = long long;
@@ -117,13 +125,13 @@ inline int get_percent(float value) {
     return roundf(value * 100); 
 }
 inline int get_rank(int card) {
-    return card / NUM_STREETS + 2;
+    return card / NUM_SUITS + 2;
 }
 inline int get_suit(int card) {
-    return card % NUM_STREETS;
+    return card % NUM_SUITS;
 }
 inline int get_card(int rank, int suit) {
-    return NUM_STREETS * rank + suit - 8;
+    return NUM_SUITS * rank + suit - 8;
 }
 inline int get_non_leaf_bucket(int player, int street) {
     return NUM_STREETS * player + street;
@@ -175,8 +183,8 @@ inline void read(ifstream& file, T& value) {
     file.read(reinterpret_cast<char*>(&value), sizeof(value));
 }
 template<typename T>
-inline void write(ofstream& file, T& value) {
-    file.write(reinterpret_cast<char*>(&value), sizeof(value));
+inline void write(ofstream& file, const T& value) {
+    file.write(reinterpret_cast<const char*>(&value), sizeof(value));
 }
 template<typename T>
 inline void read_range(ifstream& file, vec<T>& list) {
@@ -312,11 +320,11 @@ struct Playstate {
     inline bool is_street_start() const {
         return (round % NUM_ROUNDS_PER_STREET == 0);
     }
-    inline int get_check_call_amount(Action action) const {
+    inline int get_check_call_amount() const {
         return contribution[!player] - contribution[player];
     }
     inline int get_action_amount(Action action) const {
-        int amount_to_check_call = get_check_call_amount(action);
+        int amount_to_check_call = get_check_call_amount();
         int pot_after_check_call = pot + amount_to_check_call;
         int amount_to_action = 0;
         switch (action) {
@@ -333,7 +341,7 @@ struct Playstate {
         Playstate next = *this;
         next.actions[round] = action;
 
-        int amount_to_check_call = get_check_call_amount(action);
+        int amount_to_check_call = get_check_call_amount();
         int amount_to_action = get_action_amount(action);
         next.stack[player] -= amount_to_action;
         next.contribution[player] += amount_to_action, next.pot += amount_to_action;

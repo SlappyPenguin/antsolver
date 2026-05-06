@@ -4,7 +4,9 @@ future streets are dealt uniformly randomly, and is represented as a histogram w
 where each interval stores the probability that the hand strength is within a certain range.
 */
 
-#include <bits/stdc++.h>
+#include <chrono>
+#include <iomanip>
+#include <iostream>
 #include "../../include/solver.h"
 #include "../../include/convert.h"
 using namespace std;

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <bits/stdc++.h>
 #include "solver.h"
 using namespace std;
 

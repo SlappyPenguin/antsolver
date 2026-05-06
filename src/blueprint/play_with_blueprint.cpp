@@ -2,7 +2,8 @@
 Plays with hero as the precomputed blueprint strategy.
 */
 
-#include <bits/stdc++.h>
+#include <iostream>
+#include <numeric>
 #include "../../include/solver.h"
 #include "../../include/init.h"
 #include "../../include/convert.h"

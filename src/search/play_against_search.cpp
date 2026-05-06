@@ -2,7 +2,8 @@
 Same as play_with_search.cpp except solver is villain.
 */
 
-#include <bits/stdc++.h>
+#include <iostream>
+#include <numeric>
 #include "../../include/solver.h"
 #include "../../include/init.h"
 #include "../../include/convert.h"

@@ -13,7 +13,8 @@ NOTE: This code is not thread-safe, i.e. race conditions can happen. From testin
 no noticable effect on correctness.
 */
 
-#include <bits/stdc++.h>
+#include <iostream>
+#include <numeric>
 #include "../../include/solver.h"
 #include "../../include/init.h"
 #include "../../include/convert.h"

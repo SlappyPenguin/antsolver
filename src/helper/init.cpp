@@ -1,4 +1,3 @@
-#include <bits/stdc++.h>
 #include "../../include/solver.h"
 using namespace std;
 
