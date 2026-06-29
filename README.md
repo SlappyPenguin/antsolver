@@ -1,7 +1,7 @@
 # Antsolver
-A heads-up no-limit (HUNL) poker AI built from contemporary research on imperfect-information games. The goal for this project is to achieve elite human-level performance in HUNL, while training entirely on the computing resources found on a laptop. 
+A heads-up no-limit (HUNL) poker AI. The goal for this project is to achieve elite human-level performance in HUNL, while training entirely on the computing resources found on a laptop. 
 
-This project is inspired by frontier research in game theory (see `history/`).
+This project is my attempt to reproduce frontier research in poker AIs (see `history/`).
 
 ## Structure
 The solver follows the abstraction + blueprint + search paradigm used by research models.
@@ -102,7 +102,7 @@ The full solver will play in the standardised version of HUNL used in the Annual
 - $50/$100 blinds
 - All integer bet sizes allowed (above min bet)
 
-However, in this first iteration of the solver, off-tree betting actions are not yet allowed. Early testing indicates the bot plays at advanced-amateur strength.
+However, in this first iteration of the solver, off-tree betting actions are not yet allowed. It seems the bot currently plays at advanced-amateur strength.
 
 Consider its policy as Small Blind opening preflop:
 
@@ -110,14 +110,14 @@ Consider its policy as Small Blind opening preflop:
   <img src="images/antsolver_preflop1.png" width="700"><br>
 </p>
 
-Compare this to the strategies of Supremus, a frontier research AI based on neural nets, and GTO Wizard, a state-of-the-art commercial solver.
+Compare this to the strategies of Supremus, a research AI based on neural nets, and GTO Wizard, a state-of-the-art commercial solver.
 
 | | |
 |:-:|:-:|
 | <img src="images/supremus_preflop1.png" width="400"> | <img src="images/wizard_preflop1.png" width="500"> |
 | *Supremus strategy (probability of not folding)* | *GTO Wizard strategy (72BB stacks)* |
 
-While Antsolver uses the precomputed blueprint strategy in the preflop, later subgames are resolved in real-time. Consider its policy as Small Blind after limping preflop, and after Big Blind checks over a flop of K♠J♠9♣:
+While the solver uses the precomputed blueprint strategy in the preflop, later subgames are resolved in real-time. Consider its policy as Small Blind after limping preflop, and after Big Blind checks over a flop of K♠J♠9♣:
 
 | | |
 |:-:|:-:|
@@ -125,7 +125,7 @@ While Antsolver uses the precomputed blueprint strategy in the preflop, later su
 | *Antsolver strategy* | *GTO Wizard strategy (72BB stacks)* |
 
 ## Roadmap
-Planned upgrades for the second iteration of the solver:
+Planned upgrades for the second iteration:
 
 - Merge gamestate generation with training by branching chance actions in MCCFR
 - Implement regret-based pruning to speed up blueprint computation and search
